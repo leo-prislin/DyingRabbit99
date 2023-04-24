@@ -7,6 +7,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Objects;
+
 public class DyingRabbit99 extends JavaPlugin {
 	
 	private static DyingRabbit99 instance;
@@ -25,10 +27,10 @@ public class DyingRabbit99 extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new Events(), this);
 		
 		// Registering Commands
-		getCommand("cords").setExecutor(new CordsCommand());
+		Objects.requireNonNull(getCommand("cords")).setExecutor(new CordsCommand());
 		
 		// Setup Config
-		new Config();
+		saveDefaultConfig();
 		
 		
 		DyingRabbit99.sendToConsole("DyingRabbit99 erfolgreich geladen", DyingRabbit99.MessageType.SUCCESS);
@@ -38,10 +40,10 @@ public class DyingRabbit99 extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		super.onDisable();
 		
-		Config.save();
+		saveConfig();
 		Coordinates.save();
+		
 	}
 	
 	// Only static Methods!
@@ -59,10 +61,10 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		public String getPrefix() {
 			return "<light_purple>[DR99] " + switch (this) {
-				case DEFAULT -> Config.get().getString("messageColors.default");
-				case SUCCESS -> Config.get().getString("messageColors.success");
-				case ERROR -> Config.get().getString("messageColors.error");
-				case INFO -> Config.get().getString("messageColors.info");
+				case DEFAULT -> Config.getDefaultMessageColor();
+				case SUCCESS -> Config.getSuccessMessageColor();
+				case ERROR -> Config.getErrorMessageColor();
+				case INFO -> Config.getInfoMessageColor();
 			};
 		}
 	}

@@ -5,11 +5,28 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class Config {
 	
-	public Config() {
-		DyingRabbit99.get().saveDefaultConfig();
+	private Config() {}
+	
+	private static FileConfiguration get() { return DyingRabbit99.get().getConfig(); }
+	
+	
+	
+	public static String getDefaultMessageColor() {
+		return get().getString("messageColors.default");
+	}
+	public static String getSuccessMessageColor() {
+		return get().getString("messageColors.success");
+	}
+	public static String getErrorMessageColor() {
+		return get().getString("messageColors.error");
+	}
+	public static String getInfoMessageColor() {
+		return get().getString("messageColors.info");
 	}
 	
-	public static FileConfiguration get() { return DyingRabbit99.get().getConfig(); }
-	public static void save() { DyingRabbit99.get().saveConfig(); }
+	
+	public static String getOnPlayerJoinMessage() {
+		return get().getString("onPlayerJoinMessage");
+	}
 	
 }

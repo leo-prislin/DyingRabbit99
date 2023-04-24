@@ -18,12 +18,13 @@ public class CordsCommand extends DR99Command {
 	public CordsCommand() {
 		
 	}
-
+	
+	
 	@Override
 	public String getUsage() {
 		return "/cords (add <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list";
 	}
-
+	
 	protected Argument getArg0() {
 		// add/remove/list/get
 		return new Option() {
@@ -35,19 +36,7 @@ public class CordsCommand extends DR99Command {
 						@Override public Argument getNext() {
 							// <name>
 							return new Variable() {
-								@Override public Type getType() { return Type.STRING; }
-								
-								/*@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-									boolean overwritten = Coordinates.isSet(args[1]);
-									Player p = (Player) sender;
-									Coordinates.addCords(args[1], p.getLocation().getWorld().getName(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
-									if(overwritten) DyingRabbit99.sendMessage(sender, "Eintrag erfolgreich überschrieben.", DyingRabbit99.MessageType.SUCCESS);
-									else DyingRabbit99.sendMessage(sender, "Eintrag erfolgreich erstellt.", DyingRabbit99.MessageType.SUCCESS);
-									return true;
-								}
-								
-								 */
-								
+								@Override public Type getType() { return Type.STRING; }								
 								@Override public Argument getNext() {
 									// [<x> <y> <z>]
 									return new Optional() {

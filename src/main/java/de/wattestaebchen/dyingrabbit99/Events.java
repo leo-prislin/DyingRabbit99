@@ -14,7 +14,7 @@ public class Events implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		try {
-			event.getPlayer().sendMessage(Component.text(Objects.requireNonNull(Config.get().getString("onPlayerJoinMessage"))));
+			event.getPlayer().sendMessage(Component.text(Objects.requireNonNull(Config.getOnPlayerJoinMessage())));
 		}
 		catch(NullPointerException ignored) {}
 	}

@@ -1,7 +1,8 @@
 messageColors:
-  default: "<white>"
-  success: "<green>"
-  error: "<red>"
-  info: "<blue>"
+  default: "white"
+  success: "green"
+  error: "red"
+  info: "blue"
+  clickable: "gold"
 
 onPlayerJoinMessage: "Hi du Lauch!"

@@ -1,6 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.files;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,7 +39,7 @@ public class Coordinates {
 			try {
 				instance.config.save(instance.file);
 			} catch (IOException e) {
-				DyingRabbit99.sendToConsole("Saving Coordinates failed", DyingRabbit99.MessageType.ERROR);
+				DyingRabbit99.sendToConsole(Component.text().content("Saving Coordinates failed").build(), DyingRabbit99.MessageType.ERROR);
 			}
 		}
 	}

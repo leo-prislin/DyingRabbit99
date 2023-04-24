@@ -13,6 +13,6 @@ permissions:
   
 commands: 
   cords:
-    description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträgewerden ohne Bestätigungsaufforderung überschrieben!
+    description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträge werden ohne Bestätigungsaufforderung überschrieben!
     usage: /cords (add <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list
     permission: dr99.cords

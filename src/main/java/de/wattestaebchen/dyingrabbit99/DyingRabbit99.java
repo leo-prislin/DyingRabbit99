@@ -3,10 +3,14 @@ package de.wattestaebchen.dyingrabbit99;
 import de.wattestaebchen.dyingrabbit99.commands.CordsCommand;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Coordinates;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class DyingRabbit99 extends JavaPlugin {
@@ -33,7 +37,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		saveDefaultConfig();
 		
 		
-		DyingRabbit99.sendToConsole("DyingRabbit99 erfolgreich geladen", DyingRabbit99.MessageType.SUCCESS);
+		DyingRabbit99.sendToConsole(Component.text().content("DyingRabbit99 erfolgreich geladen").build(), DyingRabbit99.MessageType.SUCCESS);
 		
 	}
 	
@@ -48,25 +52,53 @@ public class DyingRabbit99 extends JavaPlugin {
 	
 	// Only static Methods!
 	
-	public static void sendToConsole(String message, MessageType type) {
-		Bukkit.getConsoleSender().sendRichMessage(type.getPrefix() + message);
+	public static void sendToConsole(TextComponent message, MessageType type) {
+		if(type == null) {
+			Bukkit.getConsoleSender().sendMessage(
+					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message)
+			);
+		}
+		else {
+			Bukkit.getConsoleSender().sendMessage(
+					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message.color(type.getColor()))
+			);
+		}
 	}
 	
 	public static void sendMessage(CommandSender receiver, String message, MessageType type) {
-		receiver.sendRichMessage(type.getPrefix() + message);
+		receiver.sendMessage(Component.text().content(message).color(type.getColor()));
+	}
+	public static void sendMessage(CommandSender receiver, TextComponent message, MessageType type) {
+		if(type == null) {
+			receiver.sendMessage(
+					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message)
+			);
+		}
+		else {
+			receiver.sendMessage(
+					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message.color(type.getColor()))
+			);
+		}
 	}
 	
 	public enum MessageType {
-		DEFAULT, SUCCESS, ERROR, INFO;
+		DEFAULT, SUCCESS, ERROR, INFO, CLICKABLE;
 		
-		public String getPrefix() {
-			return "<light_purple>[DR99] " + switch (this) {
-				case DEFAULT -> Config.getDefaultMessageColor();
-				case SUCCESS -> Config.getSuccessMessageColor();
-				case ERROR -> Config.getErrorMessageColor();
-				case INFO -> Config.getInfoMessageColor();
+		public NamedTextColor getColor() {
+			return switch (this) {
+				case DEFAULT -> DyingRabbit99.getColor(Config.getDefaultMessageColor());
+				case SUCCESS -> DyingRabbit99.getColor(Config.getSuccessMessageColor());
+				case ERROR -> DyingRabbit99.getColor(Config.getErrorMessageColor());
+				case INFO -> DyingRabbit99.getColor(Config.getInfoMessageColor());
+				case CLICKABLE -> DyingRabbit99.getColor(Config.getClickableMessageColor());
 			};
 		}
 	}
+	
+	public static NamedTextColor getColor(String color) throws NoSuchElementException {
+		return NamedTextColor.NAMES.valueOrThrow(color);
+	}
+	
+	
 	
 }

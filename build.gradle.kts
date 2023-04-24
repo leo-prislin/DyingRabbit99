@@ -28,4 +28,7 @@ tasks {
         from(jar)
         into(spigotPluginsDir ?: error("Please set spigotPluginsDir in gradle.properties"))
     }
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
 }

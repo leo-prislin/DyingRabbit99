@@ -1,6 +1,8 @@
 package de.wattestaebchen.dyingrabbit99.commands;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,12 +16,13 @@ public abstract class DR99Command implements CommandExecutor {
 			return true;
 		}
 		else {
-			DyingRabbit99.sendMessage(sender, "Unglültige Verwednung des Commands\n " + getUsage(), DyingRabbit99.MessageType.ERROR);
+			DyingRabbit99.sendMessage(sender, Component.text().content("Ungültige Verwendung des Commands").appendNewline().append(usage()).build(), DyingRabbit99.MessageType.ERROR);
 			return true;
 		}
 	}
 
 	public abstract String getUsage();
+	public abstract TextComponent usage();
 	protected abstract Argument getArg0();
 	
 	

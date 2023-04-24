@@ -23,6 +23,9 @@ public class Config {
 	public static String getInfoMessageColor() {
 		return get().getString("messageColors.info");
 	}
+	public static String getClickableMessageColor() {
+		return get().getString("messageColors.clickable");
+	}
 	
 	
 	public static String getOnPlayerJoinMessage() {

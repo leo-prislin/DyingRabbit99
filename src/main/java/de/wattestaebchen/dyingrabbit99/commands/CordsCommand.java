@@ -2,15 +2,15 @@ package de.wattestaebchen.dyingrabbit99.commands;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.files.Coordinates;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public class CordsCommand extends DR99Command {
@@ -25,6 +25,16 @@ public class CordsCommand extends DR99Command {
 		return "/cords (add <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list";
 	}
 	
+	public TextComponent usage() {
+		return Component.text().content("/cords ").clickEvent(ClickEvent.suggestCommand("/cords"))
+				.append(Component.text().content(" (add <name> [<x> <y> <z>]) /").clickEvent(ClickEvent.suggestCommand("/cords add ")))
+				.append(Component.text().content(" (remove <name> /").clickEvent(ClickEvent.suggestCommand("/cords remove ")))
+				.append(Component.text().content(" (get <name>) /").clickEvent(ClickEvent.suggestCommand("/cords get ")))
+				.append(Component.text().content(" list").clickEvent(ClickEvent.suggestCommand("/cords list ")))
+				.build();
+	}
+	
+	@Override
 	protected Argument getArg0() {
 		// add/remove/list/get
 		return new Option() {
@@ -48,8 +58,8 @@ public class CordsCommand extends DR99Command {
 											boolean overwritten = Coordinates.isSet(args[1]);
 											Player p = (Player) sender;
 											Coordinates.addCords(args[1], p.getLocation().getWorld().getName(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ());
-											if(overwritten) DyingRabbit99.sendMessage(sender, "Eintrag erfolgreich überschrieben.", DyingRabbit99.MessageType.SUCCESS);
-											else DyingRabbit99.sendMessage(sender, "Eintrag erfolgreich erstellt.", DyingRabbit99.MessageType.SUCCESS);
+											if(overwritten) DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich überschrieben.").build(), DyingRabbit99.MessageType.SUCCESS);
+											else DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich erstellt.").build(), DyingRabbit99.MessageType.SUCCESS);
 											return true;
 										}
 										@Override public Argument getInnerArg() {
@@ -72,8 +82,8 @@ public class CordsCommand extends DR99Command {
 																	boolean overwritten = Coordinates.isSet(args[1]);
 																	String world = (sender instanceof Player p) ? p.getLocation().getWorld().getName() : "";
 																	Coordinates.addCords(args[1], world, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
-																	if(overwritten) DyingRabbit99.sendMessage(sender, "Eintrag erfolgreich überschrieben.", DyingRabbit99.MessageType.SUCCESS);
-																	else DyingRabbit99.sendMessage(sender, "Eintrag erfolgreich erstellt.", DyingRabbit99.MessageType.SUCCESS);
+																	if(overwritten) DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich überschrieben.").build(), DyingRabbit99.MessageType.SUCCESS);
+																	else DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich erstellt.").build(), DyingRabbit99.MessageType.SUCCESS);
 																	return true;
 																}
 															};
@@ -98,10 +108,10 @@ public class CordsCommand extends DR99Command {
 									
 									if(Coordinates.get().isSet(args[1])) {
 										Coordinates.removeCords(args[1]);
-										DyingRabbit99.sendMessage(sender, "Der Eintrag wurde erfolgreich gelöscht.", DyingRabbit99.MessageType.SUCCESS);
+										DyingRabbit99.sendMessage(sender, Component.text().content("Der Eintrag wurde erfolgreich gelöscht.").build(), DyingRabbit99.MessageType.SUCCESS);
 									}
 									else {
-										DyingRabbit99.sendMessage(sender, "Es existiert kein Eintrag mit diesem Namen.", DyingRabbit99.MessageType.ERROR);
+										DyingRabbit99.sendMessage(sender, Component.text().content("Es existiert kein Eintrag mit diesem Namen.").build(), DyingRabbit99.MessageType.ERROR);
 									}
 									return true;
 								}
@@ -115,11 +125,15 @@ public class CordsCommand extends DR99Command {
 						
 						@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 							Set<String> keys = Coordinates.listCords();
-							StringBuilder sb = new StringBuilder("Liste aller gespeicherten Orte:");
+							
+							TextComponent.Builder tc = Component.text().content("Liste aller gespeicherten Orte:");
 							for(String key : keys) {
-								sb.append("\n").append(key);
+								tc
+									.appendNewline()
+									.append(Component.text().content(key).color(DyingRabbit99.MessageType.CLICKABLE.getColor()).clickEvent(ClickEvent.runCommand("cords get " + key)));
 							}
-							DyingRabbit99.sendMessage(sender, sb.toString(), DyingRabbit99.MessageType.DEFAULT);
+							DyingRabbit99.sendMessage(sender, tc.build(), DyingRabbit99.MessageType.DEFAULT);
+							
 							return true;
 						}
 						
@@ -135,7 +149,7 @@ public class CordsCommand extends DR99Command {
 								@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 									String[] cords = Coordinates.getCords(args[1]);
 									if(cords == null) {
-										DyingRabbit99.sendMessage(sender, "Es existiert kein Eintrag mit diesem Namen.", DyingRabbit99.MessageType.ERROR);
+										DyingRabbit99.sendMessage(sender, Component.text().content("Es existiert kein Eintrag mit diesem Namen.").build(), DyingRabbit99.MessageType.ERROR);
 										return true;
 									}
 									
@@ -144,7 +158,7 @@ public class CordsCommand extends DR99Command {
 									int z = Integer.parseInt(cords[3]);
 									
 									if(cords[0].equals("")) {
-										DyingRabbit99.sendMessage(sender, ("Der Punkt " + args[1] + " befindet sich bei den Koordinaten:\nx: " +cords[1]+ ", y: " +cords[2]+ ", z: " +cords[3]), DyingRabbit99.MessageType.DEFAULT);
+										DyingRabbit99.sendMessage(sender, Component.text().content("Der Punkt " + args[1] + " befindet sich bei den Koordinaten:\nx: " +cords[1]+ ", y: " +cords[2]+ ", z: " +cords[3]).build(), DyingRabbit99.MessageType.DEFAULT);
 										return true;
 									}
 									
@@ -155,7 +169,7 @@ public class CordsCommand extends DR99Command {
 										int directDistance = (int) p.getLocation().distance(loc);
 										msg += "\nDu bist " + directDistance + (directDistance==1 ? " Block" : " Blöcke") + " davon entfernt.";
 									}
-									DyingRabbit99.sendMessage(sender, msg, DyingRabbit99.MessageType.DEFAULT);
+									DyingRabbit99.sendMessage(sender, Component.text().content(msg).build(), DyingRabbit99.MessageType.DEFAULT);
 									
 									return true;
 								}
@@ -164,9 +178,6 @@ public class CordsCommand extends DR99Command {
 						}
 					}					
 				};
-			}
-			@Override public Argument getNext() {
-				return null;
 			}
 		};
 	}

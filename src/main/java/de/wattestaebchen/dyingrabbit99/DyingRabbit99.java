@@ -47,18 +47,18 @@ public class DyingRabbit99 extends JavaPlugin {
 	// Only static Methods!
 	
 	public static void sendToConsole(String message, MessageType type) {
-		Bukkit.getConsoleSender().sendMessage(type.getPrefix() + message);
+		Bukkit.getConsoleSender().sendRichMessage(type.getPrefix() + message);
 	}
 	
 	public static void sendMessage(CommandSender receiver, String message, MessageType type) {
-		receiver.sendMessage(type.getPrefix() + message);
+		receiver.sendRichMessage(type.getPrefix() + message);
 	}
 	
 	public enum MessageType {
 		DEFAULT, SUCCESS, ERROR, INFO;
 		
-		public String getPrefix() { // TODO Ä am Anfang
-			return "§d[DR99] " + switch (this) {
+		public String getPrefix() {
+			return "<light_purple>[DR99] " + switch (this) {
 				case DEFAULT -> Config.get().getString("messageColors.default");
 				case SUCCESS -> Config.get().getString("messageColors.success");
 				case ERROR -> Config.get().getString("messageColors.error");

@@ -1,7 +1,7 @@
 messageColors:
-  default: "§f"
-  success: "§a"
-  error: "§c"
-  info: "§9"
+  default: "<white>"
+  success: "<green>"
+  error: "<red>"
+  info: "<blue>"
 
 onPlayerJoinMessage: "Hi du Lauch!"

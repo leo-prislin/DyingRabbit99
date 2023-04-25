@@ -2,6 +2,7 @@ package de.wattestaebchen.dyingrabbit99.files;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -45,12 +46,11 @@ public class Coordinates {
 	}
 	
 	
-	// TODO world name is saved instead of uid
 	
-	public static void addCords(String name, String world, int x, int y, int z) {
-		get().createSection(name, Map.of("world", world, "x", x, "y", y, "z", z));
+	public static void addCords(String name, Location location) {
+		get().set(name, location);
 	}
-
+	
 	public static void removeCords(String name) {
 		get().set(name, null);
 	}
@@ -58,12 +58,9 @@ public class Coordinates {
 	public static boolean isSet(String name) {
 		return get().isSet(name);
 	}
-
-	/** Returns an String[] with { world, x, y, z } or null if there is no entry for the given name. x, y, z are parsable to int. A corrupted coordinates.yml file may result in values being zero. world values: 0 -> overworld, 1 -> nether, 2 -> end */
-	public static String[] getCords(String name) {
-		ConfigurationSection section = get().getConfigurationSection(name);
-		if(section == null) return null;
-		return new String[] { section.getString("world"), section.getString("x"), section.getString("y"), section.getString("z") };
+	
+	public static Location getCords(String name) {
+		return get().getLocation(name);
 	}
 	
 	public static Set<String> listCords() {

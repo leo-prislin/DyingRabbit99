@@ -1,5 +1,5 @@
 name: DyingRabbit99
-version: INDEV-1.0.1
+version: INDEV-1.0.2
 api-version: 1.19
 main: de.wattestaebchen.dyingrabbit99.DyingRabbit99
 description: Was weiß ich?
@@ -16,3 +16,8 @@ commands:
     description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträge werden ohne Bestätigungsaufforderung überschrieben!
     usage: /cords (add <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list
     permission: dr99.cords
+  location:
+    aliases: 
+      - loc
+    usage: /location (add <name>) / (remove <name>) / (get <name>) / list
+    description: Test

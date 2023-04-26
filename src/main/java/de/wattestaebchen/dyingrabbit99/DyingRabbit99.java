@@ -1,6 +1,7 @@
 package de.wattestaebchen.dyingrabbit99;
 
 import de.wattestaebchen.dyingrabbit99.commands.CordsCommand;
+import de.wattestaebchen.dyingrabbit99.commands2.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Coordinates;
 import net.kyori.adventure.text.Component;
@@ -32,12 +33,14 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		// Registering Commands
 		Objects.requireNonNull(getCommand("cords")).setExecutor(new CordsCommand());
+		Objects.requireNonNull(getCommand("location")).setExecutor(new LocationCmd());
+		//Objects.requireNonNull(getCommand("loc")).setExecutor(new LocationCmd());
 		
 		// Setup Config
 		saveDefaultConfig();
 		
 		
-		DyingRabbit99.sendToConsole(Component.text().content("DyingRabbit99 [INDEV-1.0.1] erfolgreich geladen").build(), DyingRabbit99.MessageType.SUCCESS);
+		DyingRabbit99.sendToConsole(Component.text().content("DyingRabbit99 [INDEV-1.0.2] erfolgreich geladen").build(), DyingRabbit99.MessageType.SUCCESS);
 		
 	}
 	

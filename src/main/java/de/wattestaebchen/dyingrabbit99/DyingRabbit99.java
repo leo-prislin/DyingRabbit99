@@ -3,7 +3,7 @@ package de.wattestaebchen.dyingrabbit99;
 import de.wattestaebchen.dyingrabbit99.commands.CordsCommand;
 import de.wattestaebchen.dyingrabbit99.commands2.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.files.Config;
-import de.wattestaebchen.dyingrabbit99.files.Coordinates;
+import de.wattestaebchen.dyingrabbit99.files.Locations;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -26,7 +26,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		instance = this;
 		
-		new Coordinates();
+		new Locations();
 		
 		// Registering Events
 		Bukkit.getPluginManager().registerEvents(new Events(), this);
@@ -49,7 +49,7 @@ public class DyingRabbit99 extends JavaPlugin {
 	public void onDisable() {
 		
 		saveConfig();
-		Coordinates.save();
+		Locations.save();
 		
 	}
 	

@@ -129,20 +129,20 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 		
 		// Add relevantArgs
 		Class<?>[] types = method.getParameterTypes();
-		for(int i = 0; i < relevantArgs.length; i++) {
+		for(int i = requiredInfo.length; i < requiredInfo.length + relevantArgs.length; i++) {
 			// Type String
 			if(types[i].equals(String.class)) {
-				castArgs[requiredInfo.length+i] = relevantArgs[i];
+				castArgs[i] = relevantArgs[i-requiredInfo.length];
 			}
 			// Type Integer
 			if(types[i].equals(Integer.class)) {
-				try { castArgs[requiredInfo.length+i] = Integer.parseInt(relevantArgs[i]); }
+				try { castArgs[i] = Integer.parseInt(relevantArgs[i- requiredInfo.length]); }
 				catch(NumberFormatException ignored) { return null; }
 			}
 			// Type Boolean
 			if(types[i].equals(Boolean.class)) {
 				boolean returnNull = false;
-				castArgs[requiredInfo.length+i] = switch(relevantArgs[i]) {
+				castArgs[i] = switch(relevantArgs[i-requiredInfo.length]) {
 					case "yes", "t", "true", "j", "ja", "y" -> true;
 					case "no", "f", "false", "nein", "n" -> false;
 					default -> {

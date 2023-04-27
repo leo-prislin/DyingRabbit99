@@ -7,17 +7,14 @@ author: Wattestaebchen
 contributors: []
 prefix: DR99
 permissions:
-  dr99.cords:
-    description: Berechtigt zur Nutzung von /cords
+  dr99.location:
+    description: Berechtigt zur Nutzung von /locatioin
     default: true
   
-commands: 
-  cords:
-    description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträge werden ohne Bestätigungsaufforderung überschrieben!
-    usage: /cords (add <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list
-    permission: dr99.cords
+commands:
   location:
     aliases: 
       - loc
-    usage: /location (add <name>) / (remove <name>) / (get <name>) / list
-    description: Test
+    usage: /location (set <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list
+    description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträge werden ohne Bestätigungsaufforderung überschrieben!
+    permission: dr99.location

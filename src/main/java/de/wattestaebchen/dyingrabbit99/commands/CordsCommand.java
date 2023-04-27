@@ -1,12 +1,11 @@
 package de.wattestaebchen.dyingrabbit99.commands;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import de.wattestaebchen.dyingrabbit99.files.Coordinates;
+import de.wattestaebchen.dyingrabbit99.files.Locations;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,10 +55,10 @@ public class CordsCommand extends DR99Command {
 											return !(sender instanceof Player);
 										}
 										@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-											boolean overwritten = Coordinates.isSet(args[1]);
+											boolean overwritten = Locations.isSet(args[1]);
 											
 											Player p = (Player) sender;
-											Coordinates.addCords(args[1], p.getLocation());
+											Locations.setLocation(args[1], p.getLocation());
 											
 											if(overwritten) DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich überschrieben.").build(), DyingRabbit99.MessageType.SUCCESS);
 											else DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich erstellt.").build(), DyingRabbit99.MessageType.SUCCESS);
@@ -83,7 +82,7 @@ public class CordsCommand extends DR99Command {
 																}
 																
 																@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-																	boolean overwritten = Coordinates.isSet(args[1]);
+																	boolean overwritten = Locations.isSet(args[1]);
 																	
 																	Location location;
 																	if(sender instanceof Player p) {
@@ -92,7 +91,7 @@ public class CordsCommand extends DR99Command {
 																	else {
 																		location = new Location(null, Integer.parseInt(args[2]), Integer.parseInt(args[3]), Integer.parseInt(args[4]));
 																	}
-																	Coordinates.addCords(args[1], location);
+																	Locations.setLocation(args[1], location);
 																	
 																	if(overwritten) DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich überschrieben.").build(), DyingRabbit99.MessageType.SUCCESS);
 																	else DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich erstellt.").build(), DyingRabbit99.MessageType.SUCCESS);
@@ -119,8 +118,8 @@ public class CordsCommand extends DR99Command {
 								@Override public Type getType() { return Type.STRING; }
 								@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 									
-									if(Coordinates.get().isSet(args[1])) {
-										Coordinates.removeCords(args[1]);
+									if(Locations.get().isSet(args[1])) {
+										Locations.removeLocation(args[1]);
 										DyingRabbit99.sendMessage(sender, Component.text().content("Der Eintrag wurde erfolgreich gelöscht.").build(), DyingRabbit99.MessageType.SUCCESS);
 									}
 									else {
@@ -137,7 +136,7 @@ public class CordsCommand extends DR99Command {
 						@Override public String getText() { return "list"; }
 						
 						@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-							Set<String> keys = Coordinates.listCords();
+							Set<String> keys = Locations.listLocations();
 							
 							TextComponent.Builder tc = Component.text().content("Liste aller gespeicherten Orte:");
 							for(String key : keys) {
@@ -160,7 +159,7 @@ public class CordsCommand extends DR99Command {
 							return new Variable() {
 								@Override public Type getType() { return Type.STRING; }
 								@Override public boolean onCall(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-									Location location = Coordinates.getCords(args[1]);
+									Location location = Locations.getLocation(args[1]);
 									if(location == null) {
 										DyingRabbit99.sendMessage(sender, Component.text().content("Es existiert kein Eintrag mit diesem Namen.").build(), DyingRabbit99.MessageType.ERROR);
 										return true;

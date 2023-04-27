@@ -1,4 +1,4 @@
-package de.wattestaebchen.dyingrabbit99.commands2;
+package de.wattestaebchen.dyingrabbit99.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -7,6 +7,10 @@ import org.bukkit.command.TabCompleter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -159,6 +163,36 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 		return List.of(); // TODO onTabComplete
+	}
+	
+	
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	protected @interface CommandAnnotation {
+		String[] labels();
+	}
+	/** Method must return a boolean! */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public @interface CommandExecuteAnnotation { }
+	/** Method must return a boolean! */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public @interface SubCommandAnnotation {
+		String label();
+		String[] subCommands() default {};
+		boolean subCommandsRequired() default false;
+	}
+	/**
+	 * info() Defines the additional parameters from onCommand that should be passed to this method.
+	 * For every entry in info(), there must be a corresponding method-parameter.
+	 * These parameters have to be the first method-parameters and need to be in the same order as in info().
+	 * Possible values are: sender, command, label, args.
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public @interface RequiresInfo {
+		String[] info();
 	}
 	
 }

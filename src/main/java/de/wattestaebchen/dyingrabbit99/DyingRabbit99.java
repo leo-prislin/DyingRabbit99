@@ -1,7 +1,6 @@
 package de.wattestaebchen.dyingrabbit99;
 
-import de.wattestaebchen.dyingrabbit99.commands.CordsCommand;
-import de.wattestaebchen.dyingrabbit99.commands2.LocationCmd;
+import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
 import net.kyori.adventure.text.Component;
@@ -32,9 +31,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new Events(), this);
 		
 		// Registering Commands
-		Objects.requireNonNull(getCommand("cords")).setExecutor(new CordsCommand());
 		Objects.requireNonNull(getCommand("location")).setExecutor(new LocationCmd());
-		//Objects.requireNonNull(getCommand("loc")).setExecutor(new LocationCmd());
 		
 		// Setup Config
 		saveDefaultConfig();
@@ -69,7 +66,7 @@ public class DyingRabbit99 extends JavaPlugin {
 	}
 	
 	public static void sendMessage(CommandSender receiver, String message, MessageType type) {
-		receiver.sendMessage(Component.text().content(message).color(type.getColor()));
+		sendMessage(receiver, Component.text().content(message).build(), type);
 	}
 	public static void sendMessage(CommandSender receiver, TextComponent message, MessageType type) {
 		if(type == null) {

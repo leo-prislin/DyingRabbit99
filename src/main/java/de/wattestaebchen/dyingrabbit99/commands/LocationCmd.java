@@ -1,4 +1,4 @@
-package de.wattestaebchen.dyingrabbit99.commands2;
+package de.wattestaebchen.dyingrabbit99.commands;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
-@CommandAnnotation(labels = {"location", "loc"})
+@Cmd.CommandAnnotation(labels = {"location", "loc"})
 public class LocationCmd extends Cmd {	
 	
 	@SubCommandAnnotation(label = "set")

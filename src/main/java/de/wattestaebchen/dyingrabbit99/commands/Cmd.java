@@ -14,7 +14,9 @@ import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Cmd implements CommandExecutor, TabCompleter {
 	@Override
@@ -162,7 +164,25 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 	
 	@Override
 	public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-		return List.of(); // TODO onTabComplete
+		
+		if(args.length == 0) return List.of();
+		
+		ArrayList<String> completions = new ArrayList<>();
+		for(Method method : Arrays.stream(getClass().getMethods()).filter(m -> m.isAnnotationPresent(SubCommandAnnotation.class)).toList()) {
+			
+			String[] parameters = method.getAnnotation(SubCommandAnnotation.class).label().split(" ");
+			if(parameters.length < args.length) continue;
+			
+			String[] relevantParameters = new String[args.length];
+			System.arraycopy(parameters, 0, relevantParameters, 0, relevantParameters.length);
+			
+			if(String.join(" ", relevantParameters).startsWith(String.join(" ", args))) {
+				completions.add(relevantParameters[relevantParameters.length-1]);
+			}
+			
+		}
+		return completions;
+		
 	}
 	
 	

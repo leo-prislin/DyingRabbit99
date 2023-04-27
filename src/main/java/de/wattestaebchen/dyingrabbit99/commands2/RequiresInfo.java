@@ -5,15 +5,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Method must return a boolean!
- */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface SubCommandAnnotation {
+public @interface RequiresInfo {
 	
-	String label();
-	String[] subCommands() default {};
-	boolean subCommandsRequired() default false;
+	String[] info();
 	
 }

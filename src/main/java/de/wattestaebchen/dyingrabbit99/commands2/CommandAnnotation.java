@@ -9,9 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 public @interface CommandAnnotation {
 	
-	String label();	
-	String[] alias() default {};
-	String[] subCommands() default {};
-	boolean subCommandsRequired() default false;
+	String[] labels();
 	
 }

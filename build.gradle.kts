@@ -1,5 +1,5 @@
 plugins {
-    id("java")
+    java
 }
 
 group = "de.wattestaebchen"
@@ -15,7 +15,7 @@ dependencies {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
 

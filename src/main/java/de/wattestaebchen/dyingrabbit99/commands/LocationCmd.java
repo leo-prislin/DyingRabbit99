@@ -86,7 +86,7 @@ public class LocationCmd extends Cmd {
 		for(String key : keys) {
 			tc
 					.appendNewline()
-					.append(Component.text().content(key).color(DyingRabbit99.MessageType.CLICKABLE.getColor()).clickEvent(ClickEvent.runCommand("cords get " + key)));
+					.append(Component.text().content(key).color(DyingRabbit99.MessageType.CLICKABLE.getColor()).clickEvent(ClickEvent.runCommand("/location get " + key)));
 		}
 		DyingRabbit99.sendMessage(sender, tc.build(), DyingRabbit99.MessageType.DEFAULT);
 		return true;

@@ -5,7 +5,7 @@ The same applies to any other major changes that take a little longer to impleme
 
 # How To Contribute
 
-1. Fork the project
+Fork the project.
 
 If you only want to change three lines at most, you may just edit the branch "dev". 
 For more complex contributions, create a new branch for your implementation. Please mind the branch naming conventions.

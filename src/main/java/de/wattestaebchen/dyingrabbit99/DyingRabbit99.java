@@ -8,6 +8,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.NoSuchElementException;
@@ -64,10 +65,6 @@ public class DyingRabbit99 extends JavaPlugin {
 			);
 		}
 	}
-	
-	public static void sendMessage(CommandSender receiver, String message, MessageType type) {
-		sendMessage(receiver, Component.text().content(message).build(), type);
-	}
 	public static void sendMessage(CommandSender receiver, TextComponent message, MessageType type) {
 		if(type == null) {
 			receiver.sendMessage(
@@ -78,6 +75,12 @@ public class DyingRabbit99 extends JavaPlugin {
 			receiver.sendMessage(
 					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message.color(type.getColor()))
 			);
+		}
+	}
+	public static void broadcastMessage(TextComponent message, MessageType type) {
+		sendToConsole(message, type);
+		for(Player p : Bukkit.getOnlinePlayers()) {
+			sendMessage(p, message, type);
 		}
 	}
 	

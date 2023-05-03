@@ -6,3 +6,4 @@ messageColors:
   clickable: "gold"
 
 onPlayerJoinMessage: "Hi du Lauch!"
+printDeathCordsPublic: true

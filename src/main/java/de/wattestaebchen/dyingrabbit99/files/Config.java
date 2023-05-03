@@ -31,5 +31,6 @@ public class Config {
 	public static String getOnPlayerJoinMessage() {
 		return get().getString("onPlayerJoinMessage");
 	}
+	public static boolean getPrintDeathCordsPublic() { return get().getBoolean("printDeathCordsPublic"); }
 	
 }

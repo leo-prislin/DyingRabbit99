@@ -12,6 +12,10 @@ permissions:
     default: true
   
 commands:
+  config:
+    usage: /config
+    description: DESCRIPTION
+  
   location:
     aliases: 
       - loc

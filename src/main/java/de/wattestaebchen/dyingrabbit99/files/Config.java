@@ -1,6 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.files;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Config {
@@ -32,5 +33,14 @@ public class Config {
 		return get().getString("onPlayerJoinMessage");
 	}
 	public static boolean getPrintDeathCordsPublic() { return get().getBoolean("printDeathCordsPublic"); }
+	public static void setPrintDeathCordsPublic(boolean value) { get().set("printDeathCordsPublic", value); }
+	
+	
+	
+	public static Object getValue(String path) {
+		Object value = get().get(path);
+		if(value instanceof ConfigurationSection) return null;
+		else return value;
+	}
 	
 }

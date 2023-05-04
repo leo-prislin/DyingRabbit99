@@ -1,9 +1,9 @@
 plugins {
-    id("java")
+    java
 }
 
 group = "de.wattestaebchen"
-version = "INDEV-1.0.2"
+version = "INDEV-1.0.3"
 
 repositories {
     mavenCentral()
@@ -15,7 +15,7 @@ dependencies {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
 

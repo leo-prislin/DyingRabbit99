@@ -1,20 +1,38 @@
 name: DyingRabbit99
-version: INDEV-1.0.2
+version: INDEV-1.0.3
 api-version: 1.19
 main: de.wattestaebchen.dyingrabbit99.DyingRabbit99
 description: A Minecraft Paper Plugin by Wattestaebchen
 author: Wattestaebchen
 contributors: []
 prefix: DR99
+
 permissions:
+  dr99.config:
+    description: Berechtigt zur Nutzung von /config
+    default: op
+  
+  dr99.find:
+    description: Berechtigt zur Nutzung von /find
+    default: true
   dr99.location:
     description: Berechtigt zur Nutzung von /location
     default: true
   
 commands:
+  config:
+    usage: /config save/reload/reset/(get <property>)/(set <property> [value])
+    description: Benutze diesen Command, um diverse Einstellungen der DyingRabbit99-Config auszulesen oder zu verändern. Achtung, nicht alle Einstellungen können über diesen Command bearbeitet werden!
+    permission: dr99.config
+  
+  find:
+    usage: /find <Player>
+    description: Benutze diesen Command, um dir den aktuellen Aufenthaltsort eines Spielers ausgeben zu lassen.
+    permission: dr99.find
+  
   location:
     aliases: 
       - loc
-    usage: /location (set <name> [<x> <y> <z>]) / (remove <name>) / (get <name>) / list
+    usage: /location list/(set <name> [<x> <y> <z>])/(remove <name>)/(get <name>)
     description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträge werden ohne Bestätigungsaufforderung überschrieben!
     permission: dr99.location

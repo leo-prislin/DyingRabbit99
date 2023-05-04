@@ -8,11 +8,12 @@ This plugin is meant to make your survival game a little easier, without removin
 Please note, that all the text you find in this plugin is German (my first language). An option to switch the language to English will probably be implemented in the future.
 
 ### Current features
+ - OnPlayerJoinMessage: Configure a welcome message that is always sent to a player when he joins.
+ - PrintDeathCords: Printing your death coordinates to the chat when you die, to help you to get your stuff back in time.
  - Locations: You can save any locations in your world and can access them to find back to your home, nether portal, giant creeper farm or the diamonds you left behind, because you forgot your fortune pickaxe.
  - Yeah, thats it... (for now)
 
 ### Planned features
- - Printing your death coordinates to the chat when you die, to help you to get your stuff back in time.
  - Option to make several helpful calculations with your locations. (E.G. Where would a corresponding portal be in the nether; how big is that village radius; etc.) (Things you could search on the minecraft wiki for to then type complex formulas into your calculator)
  - Command to look up crafting recepies.
  - Command to look up the current location of other players. (With privacy settings)

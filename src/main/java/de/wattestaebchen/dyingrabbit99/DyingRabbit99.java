@@ -1,5 +1,6 @@
 package de.wattestaebchen.dyingrabbit99;
 
+import de.wattestaebchen.dyingrabbit99.commands.ConfigCmd;
 import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
@@ -33,6 +34,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		// Registering Commands
 		Objects.requireNonNull(getCommand("location")).setExecutor(new LocationCmd());
+		Objects.requireNonNull(getCommand("config")).setExecutor(new ConfigCmd());
 		
 		// Setup Config
 		saveDefaultConfig();
@@ -46,7 +48,7 @@ public class DyingRabbit99 extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		
-		saveConfig();
+		Config.save();
 		Locations.save();
 		
 	}

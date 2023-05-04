@@ -1,6 +1,7 @@
 package de.wattestaebchen.dyingrabbit99;
 
 import de.wattestaebchen.dyingrabbit99.commands.ConfigCmd;
+import de.wattestaebchen.dyingrabbit99.commands.FindCmd;
 import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
@@ -33,6 +34,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new Events(), this);
 		
 		// Registering Commands
+		Objects.requireNonNull(getCommand("find")).setExecutor(new FindCmd());
 		Objects.requireNonNull(getCommand("location")).setExecutor(new LocationCmd());
 		Objects.requireNonNull(getCommand("config")).setExecutor(new ConfigCmd());
 		

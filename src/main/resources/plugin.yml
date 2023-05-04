@@ -12,6 +12,9 @@ permissions:
     description: Berechtigt zur Nutzung von /config
     default: op
   
+  dr99.find:
+    description: Berechtigt zur Nutzung von /find
+    default: true
   dr99.location:
     description: Berechtigt zur Nutzung von /location
     default: true
@@ -21,6 +24,11 @@ commands:
     usage: /config save/reload/reset/(get <property>)/(set <property> [value])
     description: Benutze diesen Command, um diverse Einstellungen der DyingRabbit99-Config auszulesen oder zu verändern. Achtung, nicht alle Einstellungen können über diesen Command bearbeitet werden!
     permission: dr99.config
+  
+  find:
+    usage: /find <Player>
+    description: Benutze diesen Command, um dir den aktuellen Aufenthaltsort eines Spielers ausgeben zu lassen.
+    permission: dr99.find
   
   location:
     aliases: 

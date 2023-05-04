@@ -19,20 +19,6 @@ import java.util.List;
 
 public abstract class Cmd implements CommandExecutor, TabCompleter {
 	
-	/*
-	TODO
-	1. For executor methods
-	params match ? => call
-
-	2. If no executor methods and 0 args => return false
-
-	3. For subcommand methods
-	args dont match -> continue
-	params match ? => call
-
-	4. No matching methods => return false
-	 */
-	
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 		
 		// Execute Command (no SubCommands)

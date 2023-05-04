@@ -48,7 +48,7 @@ public class DyingRabbit99 extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		
-		saveConfig();
+		Config.save();
 		Locations.save();
 		
 	}

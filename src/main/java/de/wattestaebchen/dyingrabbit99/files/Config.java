@@ -4,11 +4,24 @@ import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.File;
+
 public class Config {
 	
 	private Config() {}
 	
 	private static FileConfiguration get() { return DyingRabbit99.get().getConfig(); }
+	public static void save() { DyingRabbit99.get().saveConfig(); }
+	public static void reload() { DyingRabbit99.get().reloadConfig(); }
+	public static boolean reset() {
+		File file = new File(DyingRabbit99.get().getDataFolder(), "config.yml");
+		if(file.delete()) {
+			DyingRabbit99.get().saveDefaultConfig();
+			reload();
+			return true;
+		}
+		return false;
+	}
 	
 	
 	
@@ -34,13 +47,5 @@ public class Config {
 	}
 	public static boolean getPrintDeathCordsPublic() { return get().getBoolean("printDeathCordsPublic"); }
 	public static void setPrintDeathCordsPublic(boolean value) { get().set("printDeathCordsPublic", value); }
-	
-	
-	
-	public static Object getValue(String path) {
-		Object value = get().get(path);
-		if(value instanceof ConfigurationSection) return null;
-		else return value;
-	}
 	
 }

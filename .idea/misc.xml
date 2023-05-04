@@ -2,7 +2,7 @@
 <project version="4">
   <component name="EntryPointsManager">
     <list size="4">
-      <item index="0" class="java.lang.String" itemvalue="de.wattestaebchen.dyingrabbit99.commands.Cmd.SubCommandAnnotation" />
+      <item index="0" class="java.lang.String" itemvalue="de.wattestaebchen.dyingrabbit99.commands.Cmd.SubCommandExecutor" />
       <item index="1" class="java.lang.String" itemvalue="de.wattestaebchen.dyingrabbit99.commands2.CommandExecuteAnnotation" />
       <item index="2" class="java.lang.String" itemvalue="de.wattestaebchen.dyingrabbit99.commands2.SubCommandAnnotation" />
       <item index="3" class="java.lang.String" itemvalue="org.bukkit.event.EventHandler" />

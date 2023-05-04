@@ -11,11 +11,9 @@ import org.bukkit.entity.Player;
 
 import java.util.Set;
 
-@Cmd.CommandAnnotation(labels = {"location", "loc"})
 public class LocationCmd extends Cmd {	
 	
-	@SubCommandAnnotation(label = "set")
-	@RequiresInfo(info = {"sender"})
+	@SubCommandExecutor(label = "set", cmdParams = {"sender"})
 	public boolean set(CommandSender sender, String name) {
 		if(sender instanceof Player p) {
 			boolean overwritten = Locations.isSet(name);
@@ -28,8 +26,7 @@ public class LocationCmd extends Cmd {
 		}
 		return true;
 	}
-	@SubCommandAnnotation(label = "set")
-	@RequiresInfo(info = {"sender"})
+	@SubCommandExecutor(label = "set", cmdParams = {"sender"})
 	public boolean set(CommandSender sender, String name, Integer x, Integer y, Integer z) {
 		boolean overwritten = Locations.isSet(name);
 		Location location = (sender instanceof Player p) ?
@@ -41,8 +38,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandAnnotation(label = "remove")
-	@RequiresInfo(info = {"sender"})
+	@SubCommandExecutor(label = "remove", cmdParams = {"sender"})
 	public boolean remove(CommandSender sender, String name) {
 		if(Locations.get().isSet(name)) {
 			Locations.removeLocation(name);
@@ -54,8 +50,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandAnnotation(label = "get")
-	@RequiresInfo(info = {"sender"})
+	@SubCommandExecutor(label = "get", cmdParams = {"sender"})
 	public boolean get(CommandSender sender, String name) {
 		Location location = Locations.getLocation(name);
 		if(location == null) {
@@ -78,8 +73,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandAnnotation(label = "list")
-	@RequiresInfo(info = {"sender"})
+	@SubCommandExecutor(label = "list", cmdParams = {"sender"})
 	public boolean list(CommandSender sender) {
 		Set<String> keys = Locations.listLocations();
 		TextComponent.Builder tc = Component.text().content("Liste aller gespeicherten Orte:");

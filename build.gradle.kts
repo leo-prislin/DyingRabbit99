@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "de.wattestaebchen"
-version = "INDEV-1.0.2"
+version = "INDEV-1.0.3"
 
 repositories {
     mavenCentral()

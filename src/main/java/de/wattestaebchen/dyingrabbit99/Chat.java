@@ -14,6 +14,8 @@ import java.util.function.Function;
 
 public class Chat {
 	
+	private Chat() {}
+	
 	
 	public static class Text {
 		

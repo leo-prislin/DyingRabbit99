@@ -1,5 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.commands;
 
+import de.wattestaebchen.dyingrabbit99.Chat;
+import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,7 +14,7 @@ import java.util.UUID;
 
 public class PortalCmd extends Cmd {
 	
-	private final HashMap<String, Simulation> simulations = new HashMap<String, Simulation>();
+	private final HashMap<String, Simulation> simulations = new HashMap<>();
 	
 	private static class Simulation {
 		private final ArrayList<Block> portals = new ArrayList<>();
@@ -28,27 +30,46 @@ public class PortalCmd extends Cmd {
 	@SubCommandExecutor(label = "sim create", cmdParams = {"sender"})
 	public boolean simCreate(CommandSender sender, String name) {
 		if(simulations.containsKey(name)) {
+			Chat.send(
+					sender,
+					new Chat.Text("Es existiert bereits eine Simulation mit diesem Namen. Du kannst diese", Chat.Type.DEFAULT)
+							.append(new Chat.Text(" umbenennen,", ClickEvent.suggestCommand("/sim rename " + name + "<newName>")))
+							.append(new Chat.Text(" löschen", ClickEvent.suggestCommand("/sim delete " + name)))
+							.append(new Chat.Text(" oder dir einen anderen Namen aussuchen.", Chat.Type.DEFAULT))
+			);
 			return true;
 		}
-		simulations.put(name, new Simulation());
+		Simulation simulation = new Simulation();
+		simulations.put(name, simulation);
+		if(sender instanceof Player p) {
+			playerStates.put(p.getUniqueId(), simulation);
+		}
+		Chat.send(sender, new Chat.Text("Simulation erfolgreich erstellt.", Chat.Type.SUCCESS));
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim remove", cmdParams = {"sender"})
+	@SubCommandExecutor(label = "sim delete", cmdParams = {"sender"})
 	public boolean simRemove(CommandSender sender, String name) {
 		if(!simulations.containsKey(name)) {
+			Chat.send(sender, new Chat.Text("Es existiert keine Simulation mit diesem Namen.", Chat.Type.ERROR));
 			return true;
 		}
-		simulations.remove(name);
+		Simulation simulation = simulations.remove(name);
+		if(sender instanceof Player p && playerStates.get(p.getUniqueId()) == simulation) {
+			playerStates.remove(p.getUniqueId());
+		}
+		Chat.send(sender, new Chat.Text("Simulation erfolgreich gelöscht.", Chat.Type.SUCCESS));
 		return true;
 	}
 	
 	@SubCommandExecutor(label = "sim rename", cmdParams = {"sender"})
 	public boolean simRename(CommandSender sender, String oldName, String newName) {
 		if(!simulations.containsKey(oldName)) {
+			Chat.send(sender, new Chat.Text("Es existiert keine Simulation mit diesem Namen.", Chat.Type.ERROR));
 			return true;
 		}
 		simulations.put(newName, simulations.remove(oldName));
+		Chat.send(sender, new Chat.Text("Simulation erfolgreich umbenannt.", Chat.Type.SUCCESS));
 		return true;
 	}
 	
@@ -56,10 +77,12 @@ public class PortalCmd extends Cmd {
 	public boolean simCheckout(CommandSender sender, String name) {
 		if(sender instanceof Player p) {
 			if(!simulations.containsKey(name)) {
+				Chat.send(sender, new Chat.Text("Es existiert keine Simulation mit diesem Namen.", Chat.Type.ERROR));
 				return true;
 			}
 			playerStates.put(p.getUniqueId(), simulations.get(name));
 		}
+		else Chat.send(sender, new Chat.Text("Dieser Command ist nur für Spieler verfügbar.", Chat.Type.ERROR));
 		return true;
 	}
 	
@@ -124,6 +147,7 @@ public class PortalCmd extends Cmd {
 			playerStates.get(p.getUniqueId()).portals.add(portalBlock);
 			
 		}
+		Chat.send(sender, new Chat.Text("Dieser Command ist nur für Spieler verfügbar.", Chat.Type.ERROR));
 		return true;
 	}
 	

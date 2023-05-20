@@ -9,6 +9,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
+import java.util.function.Function;
+
 public class Chat {
 	
 	
@@ -31,7 +34,13 @@ public class Chat {
 			this.clickEvent = clickEvent;
 		}
 		
-		
+		// Appending
+		public Text nl() {
+			return append(new Text("\n", Type.DEFAULT));
+		}
+		public Text space() {
+			return append(new Text(" ", Type.DEFAULT));
+		}
 		public Text append(Text text) {
 			if(next == null) {
 				next = text;
@@ -41,6 +50,16 @@ public class Chat {
 			}
 			return this;
 		}
+		public <T> Text appendCollection(Collection<T> collection, Function<T, Text> appendElement) {
+			for(T element : collection) {
+				append(appendElement.apply(element));
+			}
+			return this;
+		}
+		public Text appendDefault(String defaultText) {
+			return append(new Text(defaultText, Type.DEFAULT));
+		}
+		
 		
 		private TextComponent build() {
 			TextComponent.Builder builder = Component.text().content(content).color(type.getColor());

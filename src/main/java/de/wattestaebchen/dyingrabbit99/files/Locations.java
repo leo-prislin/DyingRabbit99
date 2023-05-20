@@ -1,7 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.files;
 
+import de.wattestaebchen.dyingrabbit99.Chat;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,7 +38,7 @@ public class Locations {
 			try {
 				instance.config.save(instance.file);
 			} catch (IOException e) {
-				DyingRabbit99.sendToConsole(Component.text().content("Saving locations failed").build(), DyingRabbit99.MessageType.ERROR);
+				Chat.sendToConsole(new Chat.Text("Saving locations failed", Chat.Type.ERROR));
 			}
 		}
 	}

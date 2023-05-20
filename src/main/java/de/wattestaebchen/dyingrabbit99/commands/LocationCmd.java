@@ -1,9 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.commands;
 
-import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import de.wattestaebchen.dyingrabbit99.Chat;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -18,11 +16,15 @@ public class LocationCmd extends Cmd {
 		if(sender instanceof Player p) {
 			boolean overwritten = Locations.isSet(name);
 			Locations.setLocation(name, p.getLocation());
-			if(overwritten) DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich überschrieben.").build(), DyingRabbit99.MessageType.SUCCESS);
-			else DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich erstellt.").build(), DyingRabbit99.MessageType.SUCCESS);
+			if(overwritten) Chat.send(sender, new Chat.Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
+			else Chat.send(sender, new Chat.Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
 		}
 		else {
-			DyingRabbit99.sendMessage(sender, Component.text().content("Diese Version dieses Befehls ist nur für Spieler verfügbar. Bitte übergib zusätzlich die Koordinaten als Argumente.").build(), DyingRabbit99.MessageType.ERROR);
+			Chat.send(sender, new Chat.Text(
+					"Diese Version dieses Befehls ist nur für Spieler verfügbar." +
+							"Bitte übergib zusätzlich die Koordinaten als Argumente.",
+					Chat.Type.ERROR)
+			);
 		}
 		return true;
 	}
@@ -33,8 +35,8 @@ public class LocationCmd extends Cmd {
 				new Location(p.getWorld(), x, y, z) :
 				new Location(null, x, y, z);
 		Locations.setLocation(name, location);
-		if(overwritten) DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich überschrieben.").build(), DyingRabbit99.MessageType.SUCCESS);
-		else DyingRabbit99.sendMessage(sender, Component.text().content("Eintrag erfolgreich erstellt.").build(), DyingRabbit99.MessageType.SUCCESS);
+		if(overwritten) Chat.send(sender, new Chat.Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
+		else Chat.send(sender, new Chat.Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
 		return true;
 	}
 	
@@ -42,10 +44,10 @@ public class LocationCmd extends Cmd {
 	public boolean remove(CommandSender sender, String name) {
 		if(Locations.get().isSet(name)) {
 			Locations.removeLocation(name);
-			DyingRabbit99.sendMessage(sender, Component.text().content("Der Eintrag wurde erfolgreich gelöscht.").build(), DyingRabbit99.MessageType.SUCCESS);
+			Chat.send(sender, new Chat.Text("Der Eintrag wurde erfolgreich gelöscht.", Chat.Type.ERROR));
 		}
 		else {
-			DyingRabbit99.sendMessage(sender, Component.text().content("Es existiert kein Eintrag mit diesem Namen.").build(), DyingRabbit99.MessageType.ERROR);
+			Chat.send(sender, new Chat.Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
 		}
 		return true;
 	}
@@ -54,21 +56,36 @@ public class LocationCmd extends Cmd {
 	public boolean get(CommandSender sender, String name) {
 		Location location = Locations.getLocation(name);
 		if(location == null) {
-			DyingRabbit99.sendMessage(sender, Component.text().content("Es existiert kein Eintrag mit diesem Namen.").build(), DyingRabbit99.MessageType.ERROR);
+			Chat.send(sender, new Chat.Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
 			return true;
 		}
 		
 		if(location.getWorld() == null) {
-			DyingRabbit99.sendMessage(sender, Component.text().content("Der Punkt " + name + " befindet sich bei den Koordinaten:\nx: " +location.getBlockX()+ ", y: " +location.getBlockY()+ ", z: " + location.getBlockZ()).build(), DyingRabbit99.MessageType.DEFAULT);
+			Chat.send(sender, new Chat.Text(
+					"Der Punkt " + name + " befindet sich bei den Koordinaten:" +
+							"\nx: " +location.getBlockX() +
+							", y: " +location.getBlockY() +
+							", z: " + location.getBlockZ(),
+					Chat.Type.DEFAULT
+			));
 		}
 		else {
-			String msg = "Der Punkt " + name + " befindet sich bei den Koordinaten:\nWelt: " + location.getWorld().getEnvironment() + ", x: " +location.getBlockX()+ ", y: " +location.getBlockY()+ ", z: " +location.getBlockZ();
+			Chat.Text text = new Chat.Text(
+					"Der Punkt " + name + " befindet sich bei den Koordinaten:" +
+							"\nWelt: " + location.getWorld().getEnvironment() + 
+							", x: " +location.getBlockX() +
+							", y: " +location.getBlockY() +
+							", z: " +location.getBlockZ(),
+					Chat.Type.DEFAULT);
 			if(sender instanceof Player p && p.getLocation().getWorld().equals(location.getWorld())) {
 				int directDistance = (int) p.getLocation().distance(location);
-				msg += "\nDu bist " + directDistance + (directDistance==1 ? " Block" : " Blöcke") + " davon entfernt.";
+				text.nl().appendDefault(
+						"Du bist " + directDistance +
+								(directDistance==1 ? " Block" : " Blöcke") +
+								" davon entfernt."
+				);
 			}
-			DyingRabbit99.sendMessage(sender, Component.text().content(msg).build(), DyingRabbit99.MessageType.DEFAULT);
-			
+			Chat.send(sender, text);
 		}
 		return true;
 	}
@@ -76,13 +93,12 @@ public class LocationCmd extends Cmd {
 	@SubCommandExecutor(label = "list", cmdParams = {"sender"})
 	public boolean list(CommandSender sender) {
 		Set<String> keys = Locations.listLocations();
-		TextComponent.Builder tc = Component.text().content("Liste aller gespeicherten Orte:");
-		for(String key : keys) {
-			tc
-					.appendNewline()
-					.append(Component.text().content(key).color(DyingRabbit99.MessageType.CLICKABLE.getColor()).clickEvent(ClickEvent.runCommand("/location get " + key)));
-		}
-		DyingRabbit99.sendMessage(sender, tc.build(), DyingRabbit99.MessageType.DEFAULT);
+		Chat.send(
+				sender,
+				new Chat.Text("Liste aller gespeicherten Orte:", Chat.Type.DEFAULT)
+						.appendCollection(keys, (key) -> new Chat.Text("\n" + key, ClickEvent.runCommand("/location get " + key)))
+		);
+		
 		return true;
 	}
 	

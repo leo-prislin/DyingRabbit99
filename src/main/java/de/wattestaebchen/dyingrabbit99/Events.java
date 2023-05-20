@@ -24,17 +24,24 @@ public class Events implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Location loc = event.getPlayer().getLocation();
 		if(Config.getPrintDeathCordsPublic()) {
-			DyingRabbit99.broadcastMessage(
-					Component.text().content(event.getPlayer().getName() + " ist bei den Koordinaten\nx: " + loc.getBlockX() + ", y: " + loc.getBlockY() + ", z: " + loc.getBlockZ() + "\ngestorben.").build(),
-					DyingRabbit99.MessageType.DEFAULT
-			);
+			Chat.broadcast(new Chat.Text(
+				event.getPlayer().getName() + " ist bei den Koordinaten" +
+						"\nx: " + loc.getBlockX() +
+						", y: " + loc.getBlockY() +
+						", z: " + loc.getBlockZ() +
+						"\ngestorben.",
+				Chat.Type.DEFAULT
+			));
 		}
 		else {
-			DyingRabbit99.sendMessage(
-					event.getPlayer(),
-					Component.text().content("Du bist bei den Koordinaten\nx: " + loc.getBlockX() + ", y: " + loc.getBlockY() + ", z: " + loc.getBlockZ() + "\ngestorben.").build(),
-					DyingRabbit99.MessageType.DEFAULT
-			);
+			Chat.send(event.getPlayer(), new Chat.Text(
+					"Du bist bei den Koordinaten" +
+							"\nx: " + loc.getBlockX() +
+							", y: " + loc.getBlockY() +
+							", z: " + loc.getBlockZ() +
+							"\ngestorben.",
+					Chat.Type.DEFAULT
+			));
 		}
 	}
 	

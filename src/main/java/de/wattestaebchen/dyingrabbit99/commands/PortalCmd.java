@@ -17,23 +17,23 @@ import java.util.UUID;
 
 public class PortalCmd extends Cmd {
 	
-	private final HashMap<String, Simulation> simulations = new HashMap<>();
+	private final HashMap<String, Profile> profiles = new HashMap<>();
 	
-	private static class Simulation {
+	private static class Profile {
 		private final ArrayList<Block> portals = new ArrayList<>();
 	}
-	private final HashMap<UUID, Simulation> playerStates = new HashMap<>();
+	private final HashMap<UUID, Profile> playerStates = new HashMap<>();
 	
-	@SubCommandExecutor(label = "sim", cmdParams = {"sender"})
-	public boolean sim(CommandSender sender) {
+	@CommandExecutor(cmdParams = {"sender"})
+	public boolean execute(CommandSender sender) {
 		if(sender instanceof Player p) {
-			Simulation simulation = playerStates.get(p.getUniqueId());
-			if(simulation == null) {
+			Profile profile = playerStates.get(p.getUniqueId());
+			if(profile == null) {
 				// TODO
 				return true;
 			}
 			Text text = new Text("Simuliere...", Text.Type.DEFAULT)
-					.appendCollection(simulation.portals, true, (portalBlock) -> {
+					.appendCollection(profile.portals, true, (portalBlock) -> {
 						if(portalBlock.getWorld().getEnvironment() == World.Environment.NORMAL) {
 							
 							int x = portalBlock.getX() / 8;
@@ -42,7 +42,7 @@ public class PortalCmd extends Cmd {
 							
 							Text text1 = new Text("POIs:", Text.Type.DEFAULT);
 							ArrayList<Block> pois = new ArrayList<>();
-							simulation.portals.stream()
+							profile.portals.stream()
 									.filter((portal) ->
 											portal.getWorld().getEnvironment() == World.Environment.NETHER &&
 											Math.abs(portal.getX()-x) <= 16 &&
@@ -88,60 +88,60 @@ public class PortalCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim create", cmdParams = {"sender"})
-	public boolean simCreate(CommandSender sender, String name) {
-		if(simulations.containsKey(name)) {
+	@SubCommandExecutor(label = "profile create", cmdParams = {"sender"})
+	public boolean profileCreate(CommandSender sender, String name) {
+		if(profiles.containsKey(name)) {
 			Chat.send(
 					sender,
-					new Text("Es existiert bereits eine Simulation mit diesem Namen. Du kannst diese", Text.Type.DEFAULT)
-							.append(new Text(" umbenennen,", ClickEvent.suggestCommand("/sim rename " + name + "<newName>")))
-							.append(new Text(" löschen", ClickEvent.suggestCommand("/sim delete " + name)))
+					new Text("Es existiert bereits ein Profil mit diesem Namen. Du kannst diese", Text.Type.DEFAULT)
+							.append(new Text(" umbenennen,", ClickEvent.suggestCommand("/profile rename " + name + "<newName>")))
+							.append(new Text(" löschen", ClickEvent.suggestCommand("/profile delete " + name)))
 							.append(new Text(" oder dir einen anderen Namen aussuchen.", Text.Type.DEFAULT))
 			);
 			return true;
 		}
-		Simulation simulation = new Simulation();
-		simulations.put(name, simulation);
+		Profile profile = new Profile();
+		profiles.put(name, profile);
 		if(sender instanceof Player p) {
-			playerStates.put(p.getUniqueId(), simulation);
+			playerStates.put(p.getUniqueId(), profile);
 		}
-		Chat.send(sender, new Text("Simulation erfolgreich erstellt.", Text.Type.SUCCESS));
+		Chat.send(sender, new Text("Profil erfolgreich erstellt.", Text.Type.SUCCESS));
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim delete", cmdParams = {"sender"})
-	public boolean simRemove(CommandSender sender, String name) {
-		if(!simulations.containsKey(name)) {
-			Chat.send(sender, new Text("Es existiert keine Simulation mit diesem Namen.", Text.Type.ERROR));
+	@SubCommandExecutor(label = "profile delete", cmdParams = {"sender"})
+	public boolean profileRemove(CommandSender sender, String name) {
+		if(!profiles.containsKey(name)) {
+			Chat.send(sender, new Text("Es existiert kein Profil mit diesem Namen.", Text.Type.ERROR));
 			return true;
 		}
-		Simulation simulation = simulations.remove(name);
-		if(sender instanceof Player p && playerStates.get(p.getUniqueId()) == simulation) {
+		Profile profile = profiles.remove(name);
+		if(sender instanceof Player p && playerStates.get(p.getUniqueId()) == profile) {
 			playerStates.remove(p.getUniqueId());
 		}
-		Chat.send(sender, new Text("Simulation erfolgreich gelöscht.", Text.Type.SUCCESS));
+		Chat.send(sender, new Text("Profil erfolgreich gelöscht.", Text.Type.SUCCESS));
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim rename", cmdParams = {"sender"})
-	public boolean simRename(CommandSender sender, String oldName, String newName) {
-		if(!simulations.containsKey(oldName)) {
-			Chat.send(sender, new Text("Es existiert keine Simulation mit diesem Namen.", Text.Type.ERROR));
+	@SubCommandExecutor(label = "profile rename", cmdParams = {"sender"})
+	public boolean profileRename(CommandSender sender, String oldName, String newName) {
+		if(!profiles.containsKey(oldName)) {
+			Chat.send(sender, new Text("Es existiert kein Profil mit diesem Namen.", Text.Type.ERROR));
 			return true;
 		}
-		simulations.put(newName, simulations.remove(oldName));
-		Chat.send(sender, new Text("Simulation erfolgreich umbenannt.", Text.Type.SUCCESS));
+		profiles.put(newName, profiles.remove(oldName));
+		Chat.send(sender, new Text("Profil erfolgreich umbenannt.", Text.Type.SUCCESS));
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim checkout", cmdParams = {"sender"})
-	public boolean simCheckout(CommandSender sender, String name) {
+	@SubCommandExecutor(label = "profile checkout", cmdParams = {"sender"})
+	public boolean profileCheckout(CommandSender sender, String name) {
 		if(sender instanceof Player p) {
-			if(!simulations.containsKey(name)) {
-				Chat.send(sender, new Text("Es existiert keine Simulation mit diesem Namen.", Text.Type.ERROR));
+			if(!profiles.containsKey(name)) {
+				Chat.send(sender, new Text("Es existiert kein Profil mit diesem Namen.", Text.Type.ERROR));
 				return true;
 			}
-			playerStates.put(p.getUniqueId(), simulations.get(name));
+			playerStates.put(p.getUniqueId(), profiles.get(name));
 		}
 		else Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
 		return true;
@@ -154,7 +154,7 @@ public class PortalCmd extends Cmd {
 		if(sender instanceof Player p) {
 			
 			if(!playerStates.containsKey(p.getUniqueId())) {
-				Chat.send(sender, new Text("Du hast aktuell keine Simulation ausgewählt.", Text.Type.ERROR));
+				Chat.send(sender, new Text("Du hast aktuell kein Profil ausgewählt.", Text.Type.ERROR));
 				return true;
 			}
 			
@@ -213,6 +213,8 @@ public class PortalCmd extends Cmd {
 		else Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
 		return true;
 	}
+	
+	
 	
 	
 	/**

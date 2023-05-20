@@ -1,7 +1,8 @@
 package de.wattestaebchen.dyingrabbit99.files;
 
-import de.wattestaebchen.dyingrabbit99.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -38,7 +39,7 @@ public class Locations {
 			try {
 				instance.config.save(instance.file);
 			} catch (IOException e) {
-				Chat.sendToConsole(new Chat.Text("Saving locations failed", Chat.Type.ERROR));
+				Chat.sendToConsole(new Text("Saving locations failed", Chat.Type.ERROR));
 			}
 		}
 	}

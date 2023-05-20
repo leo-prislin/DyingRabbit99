@@ -1,5 +1,7 @@
 package de.wattestaebchen.dyingrabbit99;
 
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.commands.ConfigCmd;
 import de.wattestaebchen.dyingrabbit99.commands.FindCmd;
 import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
@@ -40,7 +42,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		saveDefaultConfig();
 		
 		
-		Chat.sendToConsole(new Chat.Text("DyingRabbit99 [INDEV-1.0.3] erfolgreich geladen", Chat.Type.SUCCESS));
+		Chat.sendToConsole(new Text("DyingRabbit99 [INDEV-1.0.3] erfolgreich geladen", Chat.Type.SUCCESS));
 		
 	}
 	

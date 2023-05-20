@@ -1,6 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.commands;
 
-import de.wattestaebchen.dyingrabbit99.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
@@ -16,11 +17,11 @@ public class LocationCmd extends Cmd {
 		if(sender instanceof Player p) {
 			boolean overwritten = Locations.isSet(name);
 			Locations.setLocation(name, p.getLocation());
-			if(overwritten) Chat.send(sender, new Chat.Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
-			else Chat.send(sender, new Chat.Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
+			if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
+			else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
 		}
 		else {
-			Chat.send(sender, new Chat.Text(
+			Chat.send(sender, new Text(
 					"Diese Version dieses Befehls ist nur für Spieler verfügbar." +
 							"Bitte übergib zusätzlich die Koordinaten als Argumente.",
 					Chat.Type.ERROR)
@@ -35,8 +36,8 @@ public class LocationCmd extends Cmd {
 				new Location(p.getWorld(), x, y, z) :
 				new Location(null, x, y, z);
 		Locations.setLocation(name, location);
-		if(overwritten) Chat.send(sender, new Chat.Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
-		else Chat.send(sender, new Chat.Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
+		if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
+		else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
 		return true;
 	}
 	
@@ -44,10 +45,10 @@ public class LocationCmd extends Cmd {
 	public boolean remove(CommandSender sender, String name) {
 		if(Locations.get().isSet(name)) {
 			Locations.removeLocation(name);
-			Chat.send(sender, new Chat.Text("Der Eintrag wurde erfolgreich gelöscht.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Der Eintrag wurde erfolgreich gelöscht.", Chat.Type.ERROR));
 		}
 		else {
-			Chat.send(sender, new Chat.Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
 		}
 		return true;
 	}
@@ -56,12 +57,12 @@ public class LocationCmd extends Cmd {
 	public boolean get(CommandSender sender, String name) {
 		Location location = Locations.getLocation(name);
 		if(location == null) {
-			Chat.send(sender, new Chat.Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
 			return true;
 		}
 		
 		if(location.getWorld() == null) {
-			Chat.send(sender, new Chat.Text(
+			Chat.send(sender, new Text(
 					"Der Punkt " + name + " befindet sich bei den Koordinaten:" +
 							"\nx: " +location.getBlockX() +
 							", y: " +location.getBlockY() +
@@ -70,7 +71,7 @@ public class LocationCmd extends Cmd {
 			));
 		}
 		else {
-			Chat.Text text = new Chat.Text(
+			Text text = new Text(
 					"Der Punkt " + name + " befindet sich bei den Koordinaten:" +
 							"\nWelt: " + location.getWorld().getEnvironment() + 
 							", x: " +location.getBlockX() +
@@ -95,8 +96,8 @@ public class LocationCmd extends Cmd {
 		Set<String> keys = Locations.listLocations();
 		Chat.send(
 				sender,
-				new Chat.Text("Liste aller gespeicherten Orte:", Chat.Type.DEFAULT)
-						.appendCollection(keys, (key) -> new Chat.Text("\n" + key, ClickEvent.runCommand("/location get " + key)))
+				new Text("Liste aller gespeicherten Orte:", Chat.Type.DEFAULT)
+						.appendCollection(keys, (key) -> new Text("\n" + key, ClickEvent.runCommand("/location get " + key)))
 		);
 		
 		return true;

@@ -1,5 +1,7 @@
 package de.wattestaebchen.dyingrabbit99;
 
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
@@ -24,7 +26,7 @@ public class Events implements Listener {
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Location loc = event.getPlayer().getLocation();
 		if(Config.getPrintDeathCordsPublic()) {
-			Chat.broadcast(new Chat.Text(
+			Chat.broadcast(new Text(
 				event.getPlayer().getName() + " ist bei den Koordinaten" +
 						"\nx: " + loc.getBlockX() +
 						", y: " + loc.getBlockY() +
@@ -34,7 +36,7 @@ public class Events implements Listener {
 			));
 		}
 		else {
-			Chat.send(event.getPlayer(), new Chat.Text(
+			Chat.send(event.getPlayer(), new Text(
 					"Du bist bei den Koordinaten" +
 							"\nx: " + loc.getBlockX() +
 							", y: " + loc.getBlockY() +

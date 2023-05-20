@@ -57,6 +57,7 @@ public class DyingRabbit99 extends JavaPlugin {
 	
 	// Only static Methods!
 	
+	
 	public static void sendToConsole(TextComponent message, MessageType type) {
 		if(type == null) {
 			Bukkit.getConsoleSender().sendMessage(

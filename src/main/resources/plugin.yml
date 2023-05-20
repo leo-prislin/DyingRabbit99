@@ -36,3 +36,7 @@ commands:
     usage: /location list/(set <name> [<x> <y> <z>])/(remove <name>)/(get <name>)
     description: Benutze diesen Command, um dir bestimmte Koordinaten zu merken. Achtung, existierende Einträge werden ohne Bestätigungsaufforderung überschrieben!
     permission: dr99.location
+  
+  portal:
+    usage: /portal
+    description: TODO

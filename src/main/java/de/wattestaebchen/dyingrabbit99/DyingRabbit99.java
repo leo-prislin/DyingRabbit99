@@ -3,6 +3,7 @@ package de.wattestaebchen.dyingrabbit99;
 import de.wattestaebchen.dyingrabbit99.commands.ConfigCmd;
 import de.wattestaebchen.dyingrabbit99.commands.FindCmd;
 import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
+import de.wattestaebchen.dyingrabbit99.commands.PortalCmd;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -33,6 +34,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Objects.requireNonNull(getCommand("find")).setExecutor(new FindCmd());
 		Objects.requireNonNull(getCommand("location")).setExecutor(new LocationCmd());
 		Objects.requireNonNull(getCommand("config")).setExecutor(new ConfigCmd());
+		Objects.requireNonNull(getCommand("portal")).setExecutor(new PortalCmd());
 		
 		// Setup Config
 		saveDefaultConfig();

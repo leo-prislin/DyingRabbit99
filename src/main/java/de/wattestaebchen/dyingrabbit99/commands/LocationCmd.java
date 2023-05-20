@@ -17,14 +17,14 @@ public class LocationCmd extends Cmd {
 		if(sender instanceof Player p) {
 			boolean overwritten = Locations.isSet(name);
 			Locations.setLocation(name, p.getLocation());
-			if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
-			else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
+			if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Text.Type.SUCCESS));
+			else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Text.Type.SUCCESS));
 		}
 		else {
 			Chat.send(sender, new Text(
 					"Diese Version dieses Befehls ist nur für Spieler verfügbar." +
 							"Bitte übergib zusätzlich die Koordinaten als Argumente.",
-					Chat.Type.ERROR)
+					Text.Type.ERROR)
 			);
 		}
 		return true;
@@ -36,8 +36,8 @@ public class LocationCmd extends Cmd {
 				new Location(p.getWorld(), x, y, z) :
 				new Location(null, x, y, z);
 		Locations.setLocation(name, location);
-		if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Chat.Type.SUCCESS));
-		else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Chat.Type.SUCCESS));
+		if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Text.Type.SUCCESS));
+		else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Text.Type.SUCCESS));
 		return true;
 	}
 	
@@ -45,10 +45,10 @@ public class LocationCmd extends Cmd {
 	public boolean remove(CommandSender sender, String name) {
 		if(Locations.get().isSet(name)) {
 			Locations.removeLocation(name);
-			Chat.send(sender, new Text("Der Eintrag wurde erfolgreich gelöscht.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Der Eintrag wurde erfolgreich gelöscht.", Text.Type.ERROR));
 		}
 		else {
-			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Text.Type.ERROR));
 		}
 		return true;
 	}
@@ -57,7 +57,7 @@ public class LocationCmd extends Cmd {
 	public boolean get(CommandSender sender, String name) {
 		Location location = Locations.getLocation(name);
 		if(location == null) {
-			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Text.Type.ERROR));
 			return true;
 		}
 		
@@ -67,7 +67,7 @@ public class LocationCmd extends Cmd {
 							"\nx: " +location.getBlockX() +
 							", y: " +location.getBlockY() +
 							", z: " + location.getBlockZ(),
-					Chat.Type.DEFAULT
+					Text.Type.DEFAULT
 			));
 		}
 		else {
@@ -77,7 +77,7 @@ public class LocationCmd extends Cmd {
 							", x: " +location.getBlockX() +
 							", y: " +location.getBlockY() +
 							", z: " +location.getBlockZ(),
-					Chat.Type.DEFAULT);
+					Text.Type.DEFAULT);
 			if(sender instanceof Player p && p.getLocation().getWorld().equals(location.getWorld())) {
 				int directDistance = (int) p.getLocation().distance(location);
 				text.nl().appendDefault(
@@ -96,8 +96,8 @@ public class LocationCmd extends Cmd {
 		Set<String> keys = Locations.listLocations();
 		Chat.send(
 				sender,
-				new Text("Liste aller gespeicherten Orte:", Chat.Type.DEFAULT)
-						.appendCollection(keys, (key) -> new Text("\n" + key, ClickEvent.runCommand("/location get " + key)))
+				new Text("Liste aller gespeicherten Orte:", Text.Type.DEFAULT)
+						.appendCollection(keys, true, (key) -> new Text(key, ClickEvent.runCommand("/location get " + key)))
 		);
 		
 		return true;

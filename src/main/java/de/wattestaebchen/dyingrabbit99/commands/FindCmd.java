@@ -19,7 +19,7 @@ public class FindCmd extends Cmd {
 	public boolean execute(CommandSender sender, String playerName) {
 		Player p = Bukkit.getPlayer(playerName);
 		if(p == null) {
-			Chat.send(sender, new Text("Der Spieler " + playerName + " wurde nicht gefunden.", Chat.Type.ERROR));
+			Chat.send(sender, new Text("Der Spieler " + playerName + " wurde nicht gefunden.", Text.Type.ERROR));
 		}
 		else {
 			Location loc = p.getLocation();
@@ -29,7 +29,7 @@ public class FindCmd extends Cmd {
 							", x: " + loc.getBlockX() +
 							", y: " + loc.getBlockY() +
 							", z: " + loc.getBlockZ(),
-					Chat.Type.DEFAULT
+					Text.Type.DEFAULT
 			));
 		}
 		return true;

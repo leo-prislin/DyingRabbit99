@@ -32,7 +32,7 @@ public class Events implements Listener {
 						", y: " + loc.getBlockY() +
 						", z: " + loc.getBlockZ() +
 						"\ngestorben.",
-				Chat.Type.DEFAULT
+				Text.Type.DEFAULT
 			));
 		}
 		else {
@@ -42,7 +42,7 @@ public class Events implements Listener {
 							", y: " + loc.getBlockY() +
 							", z: " + loc.getBlockZ() +
 							"\ngestorben.",
-					Chat.Type.DEFAULT
+					Text.Type.DEFAULT
 			));
 		}
 	}

@@ -39,7 +39,7 @@ public class Locations {
 			try {
 				instance.config.save(instance.file);
 			} catch (IOException e) {
-				Chat.sendToConsole(new Text("Saving locations failed", Chat.Type.ERROR));
+				Chat.sendToConsole(new Text("Saving locations failed", Text.Type.ERROR));
 			}
 		}
 	}

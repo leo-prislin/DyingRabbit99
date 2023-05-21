@@ -131,7 +131,7 @@ public class PortalCmd extends Cmd {
 	
 	
 	@SubCommandExecutor(label = "scan", cmdParams = {"sender"})
-	public boolean scan(CommandSender sender, int xBounds, int yBounds, int zBounds) {
+	public boolean scan(CommandSender sender, Integer xBounds, Integer yBounds, Integer zBounds) {
 		if(sender instanceof Player p) {
 			
 			if(xBounds*yBounds*zBounds > 100) {

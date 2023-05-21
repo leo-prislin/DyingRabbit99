@@ -18,6 +18,9 @@ public class Text {
 	
 	private final ClickEvent clickEvent;
 	
+	public Text() {
+		this("", Type.DEFAULT);
+	}
 	public Text(String content, Type type) {
 		this.content = content;
 		this.type = type;
@@ -35,6 +38,9 @@ public class Text {
 	}
 	public Text space() {
 		return append(new Text(" ", Type.DEFAULT));
+	}
+	public Text tab() {
+		return append(new Text("	", Type.DEFAULT));
 	}
 	public Text append(Text text) {
 		if(next == null) {

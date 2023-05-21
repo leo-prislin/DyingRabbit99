@@ -144,9 +144,11 @@ public class PortalCmd extends Cmd {
 			
 			// Remove portals that don´t exist anymore
 			int removedPortals = 0;
-			for(Block block : portals) {
-				if(block.getType() != Material.NETHER_PORTAL) {
-					portals.remove(block);
+			for(int i = 0; i < portals.size(); i++) {
+				Block portalBlock = portals.get(i);
+				if(portalBlock.getType() != Material.NETHER_PORTAL) {
+					portals.remove(portalBlock);
+					i--;
 					removedPortals++;
 				}
 			}
@@ -278,7 +280,7 @@ public class PortalCmd extends Cmd {
 			while(anyPortalBlock.getRelative(higherOffset+1, 0, 0).getType() == Material.NETHER_PORTAL) {
 				higherOffset++;
 			}
-			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt((lowerBound+higherOffset)/2 + anyPortalBlock.getZ(), anyPortalBlock.getY(), anyPortalBlock.getZ());
+			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt((higherOffset+anyPortalBlock.getX())/2 + (lowerBound+anyPortalBlock.getX())/2, anyPortalBlock.getY(), anyPortalBlock.getZ());
 		}
 		// Adjust Z
 		else {
@@ -290,7 +292,7 @@ public class PortalCmd extends Cmd {
 			while(anyPortalBlock.getRelative(0, 0, higherOffset+1).getType() == Material.NETHER_PORTAL) {
 				higherOffset++;
 			}
-			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt(anyPortalBlock.getX(), anyPortalBlock.getY(), (higherOffset+lowerOffset)/2 + anyPortalBlock.getZ());
+			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt(anyPortalBlock.getX(), anyPortalBlock.getY(), (higherOffset+anyPortalBlock.getZ())/2 + (lowerOffset+anyPortalBlock.getZ())/2);
 		}
 		return anyPortalBlock;
 	}

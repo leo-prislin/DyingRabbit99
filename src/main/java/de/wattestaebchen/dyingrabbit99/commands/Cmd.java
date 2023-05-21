@@ -57,7 +57,6 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 			if(castArgs == null) continue;
 			
 			try {
-				Arrays.stream(castArgs).forEach(System.out::println);
 				return (boolean) method.invoke(this, castArgs);
 			} catch(IllegalAccessException | InvocationTargetException e) {
 				throw new RuntimeException(e);

@@ -318,13 +318,13 @@ public class PortalCmd extends Cmd {
 	private boolean isPortalCompatible(Block portal0, Block portal1) {
 		if(portal0.getWorld().getEnvironment() == World.Environment.NORMAL) {
 			return portal1.getWorld().getEnvironment() == World.Environment.NETHER &&
-					Math.abs(portal1.getX() - portal0.getX()) <= 16 &&
-					Math.abs(portal1.getZ() - portal0.getZ()) <= 16;
+					Math.abs(portal0.getX()/8.0 - portal1.getX()) <= 16.0 &&
+					Math.abs(portal0.getZ()/8.0 - portal1.getZ()) <= 16.0;
 		}
 		else if(portal0.getWorld().getEnvironment() == World.Environment.NETHER) {
 			return portal0.getWorld().getEnvironment() == World.Environment.NORMAL &&
-					Math.abs(portal0.getX() - portal1.getX()) <= 128 &&
-					Math.abs(portal0.getZ() - portal1.getZ()) <= 128;
+					Math.abs(portal0.getX()*8 - portal1.getX()) <= 128 &&
+					Math.abs(portal0.getZ()*8 - portal1.getZ()) <= 128;
 		}
 		else throw new RuntimeException("The portalBlock´s environment is neither in a NORMAL nor a NETHER world.");
 	}

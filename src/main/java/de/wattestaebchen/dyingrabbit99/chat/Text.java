@@ -18,6 +18,10 @@ public class Text {
 	
 	private final ClickEvent clickEvent;
 	
+	public static Text newLine() {
+		return new Text().nl();
+	}
+	
 	public Text() {
 		this("", Type.DEFAULT);
 	}
@@ -36,8 +40,11 @@ public class Text {
 	public Text nl() {
 		return append(new Text("\n", Type.DEFAULT));
 	}
-	public Text space() {
-		return append(new Text(" ", Type.DEFAULT));
+	public Text indent(int amount) {
+		for(int i = 0; i < amount; i++) {
+			appendDefault("  ");
+		}
+		return this;
 	}
 	public Text tab() {
 		return append(new Text("	", Type.DEFAULT));
@@ -51,10 +58,9 @@ public class Text {
 		}
 		return this;
 	}
-	public <T> Text appendCollection(Collection<T> collection, boolean seperateByNewLine, Function<T, Text> appendElement) {
+	public <T> Text appendCollection(Collection<T> collection, Function<T, Text> appendElement) {
 		for(T element : collection) {
-			if(seperateByNewLine) nl().append(appendElement.apply(element));
-			else append(appendElement.apply(element));
+			append(appendElement.apply(element));
 		}
 		return this;
 	}
@@ -79,7 +85,10 @@ public class Text {
 	
 	public enum Type {
 		
-		DEFAULT, SUCCESS, ERROR, INFO, CLICKABLE;
+		DEFAULT,
+		SUCCESS, ERROR, INFO,
+		CLICKABLE,
+		OVERWORLD, NETHER;
 		
 		public NamedTextColor getColor() {
 			return switch (this) {
@@ -88,6 +97,8 @@ public class Text {
 				case ERROR -> DyingRabbit99.getColor(Config.getErrorMessageColor());
 				case INFO -> DyingRabbit99.getColor(Config.getInfoMessageColor());
 				case CLICKABLE -> DyingRabbit99.getColor(Config.getClickableMessageColor());
+				case OVERWORLD -> DyingRabbit99.getColor(Config.getOverworldMessageColor());
+				case NETHER -> DyingRabbit99.getColor(Config.getNetherMessageColor());
 			};
 		}
 		

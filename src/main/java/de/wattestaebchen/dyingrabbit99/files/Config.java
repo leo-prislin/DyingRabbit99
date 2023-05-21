@@ -40,6 +40,12 @@ public class Config {
 	public static String getClickableMessageColor() {
 		return get().getString("messageColors.clickable");
 	}
+	public static String getOverworldMessageColor() {
+		return get().getString("messageColors.overworld");
+	}
+	public static String getNetherMessageColor() {
+		return get().getString("messageColors.nether");
+	}
 	
 	
 	public static String getOnPlayerJoinMessage() {

@@ -97,7 +97,11 @@ public class LocationCmd extends Cmd {
 		Chat.send(
 				sender,
 				new Text("Liste aller gespeicherten Orte:", Text.Type.DEFAULT)
-						.appendCollection(keys, true, (key) -> new Text(key, ClickEvent.runCommand("/location get " + key)))
+						.appendCollection(
+								keys,
+								(key) -> new Text().nl()
+										.append(new Text(key, ClickEvent.runCommand("/location get " + key)))
+						)
 		);
 		
 		return true;

@@ -35,8 +35,9 @@ public class PortalCmd extends Cmd {
 			
 			Chat.send(
 					sender,
-					new Text("Echte Portale:", Text.Type.DEFAULT)
-							.appendCollection(portals, true, (portal) -> {
+					new Text("Simuliere...", Text.Type.DEFAULT)
+							.nl().appendDefault("Echte Portale:")
+							.appendCollection(portals, (portal) -> {
 								// Real Portal
 								
 								List<Block> compatiblePortals = getCompatiblePortals(portal, portals);
@@ -48,16 +49,16 @@ public class PortalCmd extends Cmd {
 								
 								
 								
-								Text text = realPortalToText(portal)
-										.tab().appendDefault("Kompatible Portale:")
+								Text text = Text.newLine()
+										.append(realPortalToText(portal))
+										.nl().indent(1).appendDefault("Kompatible Portale:")
 										.appendCollection(
 												getCompatiblePortals(portal, portals),
-												true,
-												(compatiblePortal) -> new Text().tab().tab().append(realPortalToText(compatiblePortal))
+												(compatiblePortal) -> Text.newLine().indent(2).append(realPortalToText(compatiblePortal))
 										);
 								closestPortalOptional.ifPresent(
-										block -> text.tab().appendDefault("Korrespondierendes Portal:")
-												.append(realPortalToText(closestPortalOptional.get()))
+										block -> text.nl().indent(1).appendDefault("Korrespondierendes Portal:")
+												.nl().indent(2).append(realPortalToText(closestPortalOptional.get()))
 								);
 								
 								return text;
@@ -269,34 +270,38 @@ public class PortalCmd extends Cmd {
 		}
 		// Adjust X
 		if(getPortalOrientation(anyPortalBlock)) {
-			int lowerBound = anyPortalBlock.getX();
+			int lowerBound = 0;
 			while(anyPortalBlock.getRelative(lowerBound-1, 0, 0).getType() == Material.NETHER_PORTAL) {
 				lowerBound--;
 			}
-			int higherBound = anyPortalBlock.getX();
-			while(anyPortalBlock.getRelative(higherBound+1, 0, 0).getType() == Material.NETHER_PORTAL) {
-				higherBound++;
+			int higherOffset = 0;
+			while(anyPortalBlock.getRelative(higherOffset+1, 0, 0).getType() == Material.NETHER_PORTAL) {
+				higherOffset++;
 			}
-			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt((lowerBound+higherBound)/2, anyPortalBlock.getY(), anyPortalBlock.getZ());
+			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt((lowerBound+higherOffset)/2 + anyPortalBlock.getZ(), anyPortalBlock.getY(), anyPortalBlock.getZ());
 		}
 		// Adjust Z
 		else {
-			int lowerBound = anyPortalBlock.getZ();
-			while(anyPortalBlock.getRelative(0, 0, lowerBound-1).getType() == Material.NETHER_PORTAL) {
-				lowerBound--;
+			int lowerOffset = 0;
+			while(anyPortalBlock.getRelative(0, 0, lowerOffset-1).getType() == Material.NETHER_PORTAL) {
+				lowerOffset--;
 			}
-			int higherBound = anyPortalBlock.getZ();
-			while(anyPortalBlock.getRelative(0, 0, higherBound+1).getType() == Material.NETHER_PORTAL) {
-				higherBound++;
+			int higherOffset = 0;
+			while(anyPortalBlock.getRelative(0, 0, higherOffset+1).getType() == Material.NETHER_PORTAL) {
+				higherOffset++;
 			}
-			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt(anyPortalBlock.getX(), anyPortalBlock.getY(), (lowerBound+higherBound)/2);
+			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt(anyPortalBlock.getX(), anyPortalBlock.getY(), (higherOffset+lowerOffset)/2 + anyPortalBlock.getZ());
 		}
 		return anyPortalBlock;
 	}
 	
 	
 	private Text realPortalToText(Block portalBlock) {
-		return new Text("[P] <" + portalBlock.getX() + " " + portalBlock.getY() + " " + portalBlock.getZ() + ">", Text.Type.DEFAULT);
+		return new Text(
+				"[P] " + (portalBlock.getWorld().getEnvironment() == World.Environment.NETHER ? "N" : "OW") +
+						" <" + portalBlock.getX() + " " + portalBlock.getY() + " " + portalBlock.getZ() + ">",
+				(portalBlock.getWorld().getEnvironment() == World.Environment.NETHER) ? Text.Type.NETHER : Text.Type.OVERWORLD
+		);
 	}
 	private Text imaginaryPortalAsString(String name, Location portalLocation) {
 		return new Text("[" + name + "] <" + portalLocation.getBlockX() + " " + portalLocation.getBlockY() + " " + portalLocation.getBlockZ() + ">", Text.Type.DEFAULT);

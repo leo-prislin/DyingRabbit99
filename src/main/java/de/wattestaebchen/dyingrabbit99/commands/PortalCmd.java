@@ -225,37 +225,31 @@ public class PortalCmd extends Cmd {
 	
 	@CommandExecutor(cmdParams = {"sender"})
 	public boolean execute(CommandSender sender) {
-		if(sender instanceof Player p) {
-			
-			Chat.send(
-					sender,
-					new Text("Simuliere...", Text.Type.DEFAULT)
-							.nl().appendDefault("Portale:")
-							.appendCollection(portals, (portal) -> {
-								// RealPortals
-								List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
-								Text text = Text.newLine()
-										.append(portal.toText());
-								if(compatiblePortals.isEmpty()) {
-									text.nl().indent(1).appendDefault("Dieses Portal hat keine kompatiblen Portale.");
-								}
-								else {
-									text.nl().indent(1).appendDefault("Kompatible Portale:")
-											.appendCollection(
-													compatiblePortals,
-													(compatiblePortal) -> Text.newLine().indent(2).append(compatiblePortal.toText())
-											)
-											.nl().indent(1).appendDefault("Korrespondierendes Portal:")
-											.nl().indent(2).append(portal.getClosestPortal(compatiblePortals).toText());
-								}
-								return text;
-							})
-			);
-			
-		}
-		else {
-			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
-		}
+		
+		Chat.send(
+				sender,
+				new Text("Simuliere...", Text.Type.DEFAULT)
+						.nl().appendDefault("Portale:")
+						.appendCollection(portals, (portal) -> {
+							// RealPortals
+							List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
+							Text text = Text.newLine()
+									.append(portal.toText());
+							if(compatiblePortals.isEmpty()) {
+								text.nl().indent(1).appendDefault("Dieses Portal hat keine kompatiblen Portale.");
+							}
+							else {
+								text.nl().indent(1).appendDefault("Kompatible Portale:")
+										.appendCollection(
+												compatiblePortals,
+												(compatiblePortal) -> Text.newLine().indent(2).append(compatiblePortal.toText())
+										)
+										.nl().indent(1).appendDefault("Korrespondierendes Portal:")
+										.nl().indent(2).append(portal.getClosestPortal(compatiblePortals).toText());
+							}
+							return text;
+						})
+		);
 		return true;
 	}
 	
@@ -332,35 +326,25 @@ public class PortalCmd extends Cmd {
 	
 	@SubCommandExecutor(label = "sim remove", cmdParams = {"sender"})
 	public boolean simRemove(CommandSender sender, String name) {
-		if(sender instanceof Player p) {
-			ImaginaryPortal portal = getImaginaryPortalByName(name);
-			if(portal == null) {
-				Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
-				return true;
-			}
-			portals.remove(portal);
-			Chat.send(sender, new Text("Portal erfolgreich entfernt.", Text.Type.SUCCESS));
+		ImaginaryPortal portal = getImaginaryPortalByName(name);
+		if(portal == null) {
+			Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
+			return true;
 		}
-		else {
-			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
-		}
+		portals.remove(portal);
+		Chat.send(sender, new Text("Portal erfolgreich entfernt.", Text.Type.SUCCESS));
 		return true;
 	}
 	
 	@SubCommandExecutor(label = "sim rename", cmdParams = {"sender"})
 	public boolean simRename(CommandSender sender, String oldName, String newName) {
-		if(sender instanceof Player p) {
-			ImaginaryPortal portal = getImaginaryPortalByName(oldName);
-			if(portal == null) {
-				Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
-				return true;
-			}
-			portal.rename(newName);
-			Chat.send(sender, new Text("Portal erfolgreich umbenannt.", Text.Type.SUCCESS));
+		ImaginaryPortal portal = getImaginaryPortalByName(oldName);
+		if(portal == null) {
+			Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
+			return true;
 		}
-		else {
-			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
-		}
+		portal.rename(newName);
+		Chat.send(sender, new Text("Portal erfolgreich umbenannt.", Text.Type.SUCCESS));
 		return true;
 	}
 	

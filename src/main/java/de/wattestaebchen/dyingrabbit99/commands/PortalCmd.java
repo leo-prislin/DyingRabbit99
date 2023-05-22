@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class PortalCmd extends Cmd {
 	
-	private abstract static class Portal {
+	private static class Portal {
 		
 		private boolean imaginary;
 		private final Block centeredBlock;
@@ -66,6 +66,9 @@ public class PortalCmd extends Cmd {
 		public boolean isInNether() {
 			return centeredBlock.getWorld().getEnvironment() == World.Environment.NETHER;
 		}
+		public boolean exists() {
+			return centeredBlock.getType() == Material.NETHER_PORTAL;
+		}
 		
 		/** The returned Location may have floating point coordinates. */
 		public Location getOptimalCorrespondingLocation(World otherWorld) {
@@ -81,6 +84,9 @@ public class PortalCmd extends Cmd {
 		}
 		/** Checks if the otherPortal could be reached when entering this portal and no better options exist. */
 		public boolean isPortalCompatible(Portal otherPortal) {
+			if(getWorld().getEnvironment() == otherPortal.getWorld().getEnvironment()) {
+				return false;
+			}
 			if(isInNether()) {
 				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
 				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 128 &&
@@ -97,7 +103,7 @@ public class PortalCmd extends Cmd {
 		public Portal getClosestPortal(Collection<Portal> otherPortals) {
 			Optional<Portal> closest = otherPortals.stream().min(
 					Comparator.comparingDouble(
-							(otherPortal) -> getLocation().distanceSquared(otherPortal.getLocation())
+							(otherPortal) -> getOptimalCorrespondingLocation(otherPortal.getWorld()).distanceSquared(otherPortal.getLocation())
 					)
 			);
 			if(closest.isPresent()) {
@@ -123,6 +129,23 @@ public class PortalCmd extends Cmd {
 			else throw new RuntimeException("The portal´s BlockData should start with \"minecraft:nether_portal[axis=\"... but is actually \"" + data + "\".");
 		}
 		
+		
+		@Override
+		public String toString() {
+			return "[P]" + (isInNether() ? " N " : " OW ") +
+					"<" + getLocation().getX() + " " + getLocation().getY() + " " + getLocation().getZ() + ">";
+		}
+		public Text toText() {
+			return new Text(this.toString(), (isInNether() ? Text.Type.NETHER : Text.Type.OVERWORLD));
+		}
+		
+		@Override
+		public boolean equals(Object otherPortal) {
+			if(otherPortal instanceof Portal p) {
+				return centeredBlock.equals(p.centeredBlock);
+			}
+			return false;
+		}
 	}
 	
 	private final ArrayList<Portal> ps = new ArrayList<>();
@@ -151,29 +174,25 @@ public class PortalCmd extends Cmd {
 					sender,
 					new Text("Simuliere...", Text.Type.DEFAULT)
 							.nl().appendDefault("Echte Portale:")
-							.appendCollection(portals, (portal) -> {
+							.appendCollection(ps, (portal) -> {
 								// Real Portal
 								
-								List<Block> compatiblePortals = getCompatiblePortals(portal, portals);
-								Optional<Block> closestPortalOptional = compatiblePortals.stream().min(
-										Comparator.comparingDouble(
-												p0 -> p0.getLocation().distanceSquared(portal.getLocation())
-										)
-								);
-								
-								
+								List<Portal> compatiblePortals = ps.stream().filter(portal::isPortalCompatible).toList();
 								
 								Text text = Text.newLine()
-										.append(realPortalToText(portal))
-										.nl().indent(1).appendDefault("Kompatible Portale:")
-										.appendCollection(
-												getCompatiblePortals(portal, portals),
-												(compatiblePortal) -> Text.newLine().indent(2).append(realPortalToText(compatiblePortal))
-										);
-								closestPortalOptional.ifPresent(
-										block -> text.nl().indent(1).appendDefault("Korrespondierendes Portal:")
-												.nl().indent(2).append(realPortalToText(closestPortalOptional.get()))
-								);
+										.append(portal.toText());
+								if(compatiblePortals.isEmpty()) {
+									text.nl().indent(1).appendDefault("Dieses Portal hat keine kompatiblen Portale.");
+								}
+								else {
+									text.nl().indent(1).appendDefault("Kompatible Portale:")
+											.appendCollection(
+													compatiblePortals,
+													(compatiblePortal) -> Text.newLine().indent(2).append(compatiblePortal.toText())
+											)
+											.nl().indent(1).appendDefault("Korrespondierendes Portal:")
+											.nl().indent(2).append(portal.getClosestPortal(compatiblePortals).toText());
+								}
 								
 								return text;
 										
@@ -258,10 +277,10 @@ public class PortalCmd extends Cmd {
 			
 			// Remove portals that don´t exist anymore
 			int removedPortals = 0;
-			for(int i = 0; i < portals.size(); i++) {
-				Block portalBlock = portals.get(i);
-				if(portalBlock.getType() != Material.NETHER_PORTAL) {
-					portals.remove(portalBlock);
+			for(int i = 0; i < ps.size(); i++) {
+				Portal portal = ps.get(i);
+				if(!portal.exists()) {
+					ps.remove(portal);
 					i--;
 					removedPortals++;
 				}
@@ -274,9 +293,9 @@ public class PortalCmd extends Cmd {
 						Block block = playerLoc.getWorld().getBlockAt(x, y, z);
 						// Add found nether portal
 						if(block.getType() == Material.NETHER_PORTAL) {
-							block = getCenteredPortalBlock(block);
-							if(!portals.contains(block)) {
-								portals.add(block);
+							Portal portal = new Portal(block);
+							if(!ps.contains(portal)) {
+								ps.add(portal);
 								addedPortals++;
 							}
 						}

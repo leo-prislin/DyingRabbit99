@@ -37,7 +37,7 @@ public class PortalCmd extends Cmd {
 			}
 		}
 		/** Checks if the otherPortal could be reached when entering this portal and no better options exist. */
-		public boolean isPortalCompatible(RealPortal otherPortal) {
+		public boolean isPortalCompatible(Portal otherPortal) {
 			if(getWorld().getEnvironment() == otherPortal.getWorld().getEnvironment()) {
 				return false;
 			}
@@ -54,8 +54,8 @@ public class PortalCmd extends Cmd {
 		}
 		
 		/** @throws IllegalArgumentException If parameter otherPortals is empty. */
-		public RealPortal getClosestPortal(Collection<RealPortal> otherPortals) {
-			Optional<RealPortal> closest = otherPortals.stream().min(
+		public Portal getClosestPortal(Collection<Portal> otherPortals) {
+			Optional<Portal> closest = otherPortals.stream().min(
 					Comparator.comparingDouble(
 							(otherPortal) -> getOptimalCorrespondingLocation(otherPortal.getWorld()).distanceSquared(otherPortal.getLocation())
 					)
@@ -210,33 +210,30 @@ public class PortalCmd extends Cmd {
 		
 	}
 	
-	private final ArrayList<RealPortal> realPortals = new ArrayList<>();
-	
-	
-	private final HashMap<String, Profile> profiles = new HashMap<>();
-	private static class Profile {
-		private final HashMap<String, Location> imaginaryPortals = new HashMap<>();
+	private final ArrayList<Portal> portals = new ArrayList<>();
+	private List<RealPortal> getRealPortals() {
+		return portals.stream().filter((portal) -> portal instanceof RealPortal).map((portal) -> (RealPortal) portal).toList();
 	}
-	private final HashMap<UUID, Profile> playerStates = new HashMap<>();
+	private List<ImaginaryPortal> getImaginaryPortals() {
+		return portals.stream().filter((portal) -> portal instanceof ImaginaryPortal).map((portal) -> (ImaginaryPortal) portal).toList();
+	}
 	
+	private ImaginaryPortal getImaginaryPortalByName(String name) {
+		return getImaginaryPortals().stream().filter((portal) -> portal.getName().equals(name)).findFirst().orElse(null);
+		
+	}
 	
 	@CommandExecutor(cmdParams = {"sender"})
 	public boolean execute(CommandSender sender) {
 		if(sender instanceof Player p) {
 			
-			Profile profile = playerStates.get(p.getUniqueId());
-			if(profile == null) {
-				Chat.send(sender, new Text("Du hast kein Profil ausgewählt.", Text.Type.ERROR));
-				return true;
-			}
-			
 			Chat.send(
 					sender,
 					new Text("Simuliere...", Text.Type.DEFAULT)
-							.nl().appendDefault("Echte Portale:")
-							.appendCollection(realPortals, (portal) -> {
+							.nl().appendDefault("Portale:")
+							.appendCollection(portals, (portal) -> {
 								// RealPortals
-								List<RealPortal> compatiblePortals = realPortals.stream().filter(portal::isPortalCompatible).toList();
+								List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
 								Text text = Text.newLine()
 										.append(portal.toText());
 								if(compatiblePortals.isEmpty()) {
@@ -253,65 +250,8 @@ public class PortalCmd extends Cmd {
 								}
 								return text;
 							})
-							.nl().nl().appendDefault("Simulierte Portale:")
-							.appendDefault("TODO")
 			);
 			
-		}
-		else {
-			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
-		}
-		return true;
-	}
-	
-	@SubCommandExecutor(label = "profile create", cmdParams = {"sender"})
-	public boolean profileCreate(CommandSender sender, String name) {
-		if(profiles.containsKey(name)) {
-			Chat.send(sender,	new Text("Es existiert bereits ein Profil mit diesem Namen.", Text.Type.ERROR));
-			return true;
-		}
-		Profile profile = new Profile();
-		profiles.put(name, profile);
-		if(sender instanceof Player p) {
-			playerStates.put(p.getUniqueId(), profile);
-		}
-		Chat.send(sender, new Text("Profil erfolgreich erstellt.", Text.Type.SUCCESS));
-		return true;
-	}
-	
-	@SubCommandExecutor(label = "profile delete", cmdParams = {"sender"})
-	public boolean profileDelete(CommandSender sender, String name) {
-		if(!profiles.containsKey(name)) {
-			Chat.send(sender, new Text("Es existiert kein Profil mit diesem Namen.", Text.Type.ERROR));
-			return true;
-		}
-		Profile profile = profiles.remove(name);
-		if(sender instanceof Player p && playerStates.get(p.getUniqueId()) == profile) {
-			playerStates.remove(p.getUniqueId());
-		}
-		Chat.send(sender, new Text("Profil erfolgreich gelöscht.", Text.Type.SUCCESS));
-		return true;
-	}
-	
-	@SubCommandExecutor(label = "profile rename", cmdParams = {"sender"})
-	public boolean profileRename(CommandSender sender, String oldName, String newName) {
-		if(!profiles.containsKey(oldName)) {
-			Chat.send(sender, new Text("Es existiert kein Profil mit diesem Namen.", Text.Type.ERROR));
-			return true;
-		}
-		profiles.put(newName, profiles.remove(oldName));
-		Chat.send(sender, new Text("Profil erfolgreich umbenannt.", Text.Type.SUCCESS));
-		return true;
-	}
-	
-	@SubCommandExecutor(label = "profile checkout", cmdParams = {"sender"})
-	public boolean profileCheckout(CommandSender sender, String name) {
-		if(sender instanceof Player p) {
-			if(!profiles.containsKey(name)) {
-				Chat.send(sender, new Text("Es existiert kein Profil mit diesem Namen.", Text.Type.ERROR));
-				return true;
-			}
-			playerStates.put(p.getUniqueId(), profiles.get(name));
 		}
 		else {
 			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
@@ -333,10 +273,10 @@ public class PortalCmd extends Cmd {
 			
 			// Remove portals that don´t exist anymore
 			int removedPortals = 0;
-			for(int i = 0; i < realPortals.size(); i++) {
-				RealPortal portal = realPortals.get(i);
-				if(!portal.exists()) {
-					realPortals.remove(portal);
+			for(int i = 0; i < portals.size(); i++) {
+				Portal portal = portals.get(i);
+				if(portal instanceof RealPortal realPortal && !realPortal.exists()) {
+					portals.remove(portal);
 					i--;
 					removedPortals++;
 				}
@@ -350,8 +290,8 @@ public class PortalCmd extends Cmd {
 						// Add found nether portal
 						if(block.getType() == Material.NETHER_PORTAL) {
 							RealPortal portal = new RealPortal(block);
-							if(!realPortals.contains(portal)) {
-								realPortals.add(portal);
+							if(!portals.contains(portal)) {
+								portals.add(portal);
 								addedPortals++;
 							}
 						}
@@ -376,17 +316,13 @@ public class PortalCmd extends Cmd {
 	@SubCommandExecutor(label = "sim add", cmdParams = {"sender"})
 	public boolean simAdd(CommandSender sender, String name){
 		if(sender instanceof Player p) {
-			Profile profile = playerStates.get(p.getUniqueId());
-			if(profile == null) {
-				Chat.send(sender, new Text("Du hast aktuell kein Simulations-Profil ausgewählt.", Text.Type.ERROR));
-				return true;
-			}
-			if(profile.imaginaryPortals.containsKey(name)) {
+			
+			if(getImaginaryPortals().stream().anyMatch((portal) -> portal.getName().equals(name))) {
 				Chat.send(sender, new Text("Es existiert bereits ein Portal mit diesem Namen.", Text.Type.ERROR));
 				return true;
 			}
-			profile.imaginaryPortals.put(name, new Location(p.getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ()));
-			Chat.send(sender, new Text("Portal erfolgreich registriert.", Text.Type.SUCCESS));
+			portals.add(new ImaginaryPortal(name, new Location(p.getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ())));
+			Chat.send(sender, new Text("Portal erfolgreich hinzugefügt.", Text.Type.SUCCESS));
 		}
 		else {
 			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
@@ -397,16 +333,12 @@ public class PortalCmd extends Cmd {
 	@SubCommandExecutor(label = "sim remove", cmdParams = {"sender"})
 	public boolean simRemove(CommandSender sender, String name) {
 		if(sender instanceof Player p) {
-			Profile profile = playerStates.get(p.getUniqueId());
-			if(profile == null) {
-				Chat.send(sender, new Text("Du hast aktuell kein Simulations-Profil ausgewählt.", Text.Type.ERROR));
-				return true;
-			}
-			if(!profile.imaginaryPortals.containsKey(name)) {
+			ImaginaryPortal portal = getImaginaryPortalByName(name);
+			if(portal == null) {
 				Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
 				return true;
 			}
-			profile.imaginaryPortals.remove(name);
+			portals.remove(portal);
 			Chat.send(sender, new Text("Portal erfolgreich entfernt.", Text.Type.SUCCESS));
 		}
 		else {
@@ -418,17 +350,12 @@ public class PortalCmd extends Cmd {
 	@SubCommandExecutor(label = "sim rename", cmdParams = {"sender"})
 	public boolean simRename(CommandSender sender, String oldName, String newName) {
 		if(sender instanceof Player p) {
-			Profile profile = playerStates.get(p.getUniqueId());
-			if(profile == null) {
-				Chat.send(sender, new Text("Du hast aktuell kein Simulations-Profil ausgewählt.", Text.Type.ERROR));
-				return true;
-			}
-			if(!profile.imaginaryPortals.containsKey(oldName)) {
+			ImaginaryPortal portal = getImaginaryPortalByName(oldName);
+			if(portal == null) {
 				Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
 				return true;
 			}
-			Location portal = profile.imaginaryPortals.remove(oldName);
-			profile.imaginaryPortals.put(newName, portal);
+			portal.rename(newName);
 			Chat.send(sender, new Text("Portal erfolgreich umbenannt.", Text.Type.SUCCESS));
 		}
 		else {

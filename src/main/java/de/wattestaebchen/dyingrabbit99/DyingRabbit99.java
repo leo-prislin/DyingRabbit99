@@ -10,6 +10,7 @@ import de.wattestaebchen.dyingrabbit99.files.Config;
 import de.wattestaebchen.dyingrabbit99.files.Locations;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.NoSuchElementException;
@@ -57,6 +58,10 @@ public class DyingRabbit99 extends JavaPlugin {
 	
 	public static NamedTextColor getColor(String color) throws NoSuchElementException {
 		return NamedTextColor.NAMES.valueOrThrow(color);
+	}
+	
+	public static Location normalizeLocation(Location location) {
+		return location.getBlock().getLocation();
 	}
 	
 	

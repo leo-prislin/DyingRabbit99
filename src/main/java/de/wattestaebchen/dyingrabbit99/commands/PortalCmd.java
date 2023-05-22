@@ -1,5 +1,6 @@
 package de.wattestaebchen.dyingrabbit99.commands;
 
+import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
 import org.bukkit.Location;
@@ -13,11 +14,74 @@ import java.util.*;
 
 public class PortalCmd extends Cmd {
 	
-	private static class Portal {
+	
+	private static abstract class Portal {
+		
+		public abstract Location getLocation();
+		public abstract World getWorld();
+		public boolean isInNether() {
+			return getWorld().getEnvironment() == World.Environment.NETHER;
+		}
+		
+		
+		/** The returned Location may have floating point coordinates. */
+		public Location getOptimalCorrespondingLocation(World otherWorld) {
+			if(getWorld().getEnvironment() == otherWorld.getEnvironment()) {
+				throw new IllegalArgumentException("Parameter otherWorld must not be of the same environment as this portal.");
+			}
+			if(isInNether()) {
+				return new Location(otherWorld, getLocation().getX()*8, getLocation().getY(), getLocation().getZ()*8);
+			}
+			else {
+				return new Location(otherWorld, getLocation().getX()/8.0, getLocation().getY(), getLocation().getZ()/8.0);
+			}
+		}
+		/** Checks if the otherPortal could be reached when entering this portal and no better options exist. */
+		public boolean isPortalCompatible(RealPortal otherPortal) {
+			if(getWorld().getEnvironment() == otherPortal.getWorld().getEnvironment()) {
+				return false;
+			}
+			if(isInNether()) {
+				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
+				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 128 &&
+						Math.abs(optimalCorrespondingLocation.getBlockZ() - otherPortal.getLocation().getBlockZ()) <= 128;
+			}
+			else {
+				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
+				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 16 &&
+						Math.abs(optimalCorrespondingLocation.getBlockZ() - otherPortal.getLocation().getBlockZ()) <= 16;
+			}
+		}
+		
+		/** @throws IllegalArgumentException If parameter otherPortals is empty. */
+		public RealPortal getClosestPortal(Collection<RealPortal> otherPortals) {
+			Optional<RealPortal> closest = otherPortals.stream().min(
+					Comparator.comparingDouble(
+							(otherPortal) -> getOptimalCorrespondingLocation(otherPortal.getWorld()).distanceSquared(otherPortal.getLocation())
+					)
+			);
+			if(closest.isPresent()) {
+				return closest.get();
+			}
+			else {
+				throw new IllegalArgumentException("Parameter otherPortals must not be empty.");
+			}
+		}
+		
+		public Text toText() {
+			return new Text(this.toString(), (isInNether() ? Text.Type.NETHER : Text.Type.OVERWORLD));
+		}
+		
+	}
+	
+	private static class RealPortal extends Portal {
 		
 		private final Block centeredBlock;
+		public Block getBlock() {
+			return centeredBlock;
+		}
 		
-		public Portal(Block anyPortalBlock) {
+		public RealPortal(Block anyPortalBlock) {
 			if(anyPortalBlock.getType() != Material.NETHER_PORTAL) {
 				throw new IllegalArgumentException("Parameter anyPortalBlock must be of Type NETHER_PORTAL.");
 			}
@@ -52,71 +116,22 @@ public class PortalCmd extends Cmd {
 			this.centeredBlock = anyPortalBlock;
 		}
 		
-		public Block getBlock() {
-			return centeredBlock;
-		}
-		public World getWorld() {
-			return getBlock().getWorld();
-		}
-		public Location getLocation() {
-			return getBlock().getLocation();
-		}
-		public boolean isInNether() {
-			return getBlock().getWorld().getEnvironment() == World.Environment.NETHER;
-		}
 		public boolean exists() {
 			return getBlock().getType() == Material.NETHER_PORTAL;
 		}
 		
-		/** The returned Location may have floating point coordinates. */
-		public Location getOptimalCorrespondingLocation(World otherWorld) {
-			if(getBlock().getWorld().getEnvironment() == otherWorld.getEnvironment()) {
-				throw new IllegalArgumentException("Parameter otherWorld must not be of the same environment as this portal.");
-			}
-			if(isInNether()) {
-				return new Location(otherWorld, getLocation().getX()*8, getLocation().getY(), getLocation().getZ()*8);
-			}
-			else {
-				return new Location(otherWorld, getLocation().getX()/8.0, getLocation().getY(), getLocation().getZ()/8.0);
-			}
+		@Override
+		public World getWorld() {
+			return getBlock().getWorld();
 		}
-		/** Checks if the otherPortal could be reached when entering this portal and no better options exist. */
-		public boolean isPortalCompatible(Portal otherPortal) {
-			if(getWorld().getEnvironment() == otherPortal.getWorld().getEnvironment()) {
-				return false;
-			}
-			if(isInNether()) {
-				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
-				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 128 &&
-						Math.abs(optimalCorrespondingLocation.getBlockZ() - otherPortal.getLocation().getBlockZ()) <= 128;
-			}
-			else {
-				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
-				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 16 &&
-						Math.abs(optimalCorrespondingLocation.getBlockZ() - otherPortal.getLocation().getBlockZ()) <= 16;
-			}
+		@Override
+		public Location getLocation() {
+			return getBlock().getLocation();
 		}
 		
-		/** @throws IllegalArgumentException If parameter otherPortals is empty. */
-		public Portal getClosestPortal(Collection<Portal> otherPortals) {
-			Optional<Portal> closest = otherPortals.stream().min(
-					Comparator.comparingDouble(
-							(otherPortal) -> getOptimalCorrespondingLocation(otherPortal.getWorld()).distanceSquared(otherPortal.getLocation())
-					)
-			);
-			if(closest.isPresent()) {
-				return closest.get();
-			}
-			else {
-				throw new IllegalArgumentException("Parameter otherPortals must not be empty.");
-			}
-		}
-		
-		/**
-		 * Returns true if the portals orientation is x, false otherwise.
-		 */
+		/** Returns true if the portals orientation is x, false otherwise. This method is equal to RealPortal.getOrientation(getBlock)). */
 		private boolean getOrientation() {
-			return getOrientation(getBlock());
+			return RealPortal.getOrientation(getBlock());
 		}
 		/**
 		 * Returns true if the portals orientation is x, false otherwise.
@@ -136,20 +151,66 @@ public class PortalCmd extends Cmd {
 			return "[P]" + (isInNether() ? " N " : " OW ") +
 					"<" + getLocation().getX() + " " + getLocation().getY() + " " + getLocation().getZ() + ">";
 		}
-		public Text toText() {
-			return new Text(this.toString(), (isInNether() ? Text.Type.NETHER : Text.Type.OVERWORLD));
-		}
 		
 		@Override
 		public boolean equals(Object otherPortal) {
-			if(otherPortal instanceof Portal p) {
+			if(otherPortal instanceof RealPortal p) {
 				return getBlock().equals(p.getBlock());
 			}
 			return false;
 		}
 	}
 	
-	private final ArrayList<Portal> portals = new ArrayList<>();
+	private static class ImaginaryPortal extends Portal {
+		
+		private String name;
+		public String getName() {
+			return name;
+		}
+		public void rename(String newName) {
+			this.name = newName;
+		}
+		
+		private final Location location;
+		@Override
+		public Location getLocation() {
+			return location;
+		}
+		
+		public ImaginaryPortal(String name, Location location) {
+			if(name == null || location == null) {
+				throw new IllegalArgumentException("Parameters must not be null.");
+			}
+			this.name = name;
+			this.location = DyingRabbit99.normalizeLocation(location);
+		}
+		
+		@Override
+		public World getWorld() {
+			return getLocation().getWorld();
+		}
+		@Override
+		public boolean isInNether() {
+			return getWorld().getEnvironment() == World.Environment.NETHER;
+		}
+		
+		@Override
+		public String toString() {
+			return "[" + getName() + "]" + (isInNether() ? " N " : " OW ") +
+					"<" + getLocation().getX() + " " + getLocation().getY() + " " + getLocation().getZ() + ">";
+		}
+		
+		@Override
+		public boolean equals(Object otherPortal) {
+			if(otherPortal instanceof ImaginaryPortal p) {
+				return getName().equals(p.getName()) && getLocation().equals(p.getLocation());
+			}
+			return false;
+		}
+		
+	}
+	
+	private final ArrayList<RealPortal> realPortals = new ArrayList<>();
 	
 	
 	private final HashMap<String, Profile> profiles = new HashMap<>();
@@ -173,11 +234,9 @@ public class PortalCmd extends Cmd {
 					sender,
 					new Text("Simuliere...", Text.Type.DEFAULT)
 							.nl().appendDefault("Echte Portale:")
-							.appendCollection(portals, (portal) -> {
-								// Real Portal
-								
-								List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
-								
+							.appendCollection(realPortals, (portal) -> {
+								// RealPortals
+								List<RealPortal> compatiblePortals = realPortals.stream().filter(portal::isPortalCompatible).toList();
 								Text text = Text.newLine()
 										.append(portal.toText());
 								if(compatiblePortals.isEmpty()) {
@@ -192,9 +251,7 @@ public class PortalCmd extends Cmd {
 											.nl().indent(1).appendDefault("Korrespondierendes Portal:")
 											.nl().indent(2).append(portal.getClosestPortal(compatiblePortals).toText());
 								}
-								
 								return text;
-										
 							})
 							.nl().nl().appendDefault("Simulierte Portale:")
 							.appendDefault("TODO")
@@ -276,10 +333,10 @@ public class PortalCmd extends Cmd {
 			
 			// Remove portals that don´t exist anymore
 			int removedPortals = 0;
-			for(int i = 0; i < portals.size(); i++) {
-				Portal portal = portals.get(i);
+			for(int i = 0; i < realPortals.size(); i++) {
+				RealPortal portal = realPortals.get(i);
 				if(!portal.exists()) {
-					portals.remove(portal);
+					realPortals.remove(portal);
 					i--;
 					removedPortals++;
 				}
@@ -292,9 +349,9 @@ public class PortalCmd extends Cmd {
 						Block block = playerLoc.getWorld().getBlockAt(x, y, z);
 						// Add found nether portal
 						if(block.getType() == Material.NETHER_PORTAL) {
-							Portal portal = new Portal(block);
-							if(!portals.contains(portal)) {
-								portals.add(portal);
+							RealPortal portal = new RealPortal(block);
+							if(!realPortals.contains(portal)) {
+								realPortals.add(portal);
 								addedPortals++;
 							}
 						}

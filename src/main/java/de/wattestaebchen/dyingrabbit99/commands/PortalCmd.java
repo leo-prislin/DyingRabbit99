@@ -3,6 +3,7 @@ package de.wattestaebchen.dyingrabbit99.commands;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -155,7 +156,7 @@ public class PortalCmd extends Cmd {
 		@Override
 		public boolean equals(Object otherPortal) {
 			if(otherPortal instanceof RealPortal p) {
-				return getBlock().equals(p.getBlock());
+				return this == otherPortal || getBlock().equals(p.getBlock());
 			}
 			return false;
 		}
@@ -203,7 +204,7 @@ public class PortalCmd extends Cmd {
 		@Override
 		public boolean equals(Object otherPortal) {
 			if(otherPortal instanceof ImaginaryPortal p) {
-				return getName().equals(p.getName()) && getLocation().equals(p.getLocation());
+				return this == otherPortal || (getName().equals(p.getName()) && getLocation().equals(p.getLocation()));
 			}
 			return false;
 		}
@@ -220,7 +221,14 @@ public class PortalCmd extends Cmd {
 	
 	private ImaginaryPortal getImaginaryPortalByName(String name) {
 		return getImaginaryPortals().stream().filter((portal) -> portal.getName().equals(name)).findFirst().orElse(null);
-		
+	}
+	
+	@SubCommandExecutor(label = "test", cmdParams = {"sender"})
+	public boolean test(CommandSender sender) {
+		var a = new Text("a", Text.Type.OVERWORLD, TextDecoration.BOLD);
+		var b = new Text("b", Text.Type.OVERWORLD);
+		Chat.send(sender, a.append(b));
+		return true;
 	}
 	
 	@CommandExecutor(cmdParams = {"sender"})
@@ -231,7 +239,6 @@ public class PortalCmd extends Cmd {
 				new Text("Simuliere...", Text.Type.DEFAULT)
 						.nl().appendDefault("Portale:")
 						.appendCollection(portals, (portal) -> {
-							// RealPortals
 							List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
 							Text text = Text.newLine()
 									.append(portal.toText());
@@ -239,13 +246,14 @@ public class PortalCmd extends Cmd {
 								text.nl().indent(1).appendDefault("Dieses Portal hat keine kompatiblen Portale.");
 							}
 							else {
+								Portal closestPortal = portal.getClosestPortal(compatiblePortals);
 								text.nl().indent(1).appendDefault("Kompatible Portale:")
 										.appendCollection(
 												compatiblePortals,
-												(compatiblePortal) -> Text.newLine().indent(2).append(compatiblePortal.toText())
-										)
-										.nl().indent(1).appendDefault("Korrespondierendes Portal:")
-										.nl().indent(2).append(portal.getClosestPortal(compatiblePortals).toText());
+												(compatiblePortal) -> compatiblePortal.equals(closestPortal) ?
+														Text.newLine().indent(2).append(compatiblePortal.toText().setDecorations(TextDecoration.BOLD)) :
+														Text.newLine().indent(2).append(compatiblePortal.toText())
+										);
 							}
 							return text;
 						})
@@ -253,12 +261,16 @@ public class PortalCmd extends Cmd {
 		return true;
 	}
 	
+	@SubCommandExecutor(label = "scan", cmdParams = {"sender"})
+	public boolean scan(CommandSender sender) {
+		return scan(sender, 5, 5, 5);
+	}
 	
 	@SubCommandExecutor(label = "scan", cmdParams = {"sender"})
 	public boolean scan(CommandSender sender, Integer xBounds, Integer yBounds, Integer zBounds) {
 		if(sender instanceof Player p) {
 			
-			if(xBounds*yBounds*zBounds > 100) {
+			if(xBounds*yBounds*zBounds > 1000) {
 				Chat.send(sender, new Text("Bitte beschränke dich auf einen kleineren Suchbereich.", Text.Type.ERROR));
 				return true;
 			}

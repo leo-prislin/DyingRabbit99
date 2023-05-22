@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 
 import java.util.Collection;
 import java.util.function.Function;
@@ -15,6 +16,7 @@ public class Text {
 	private Text next = null;
 	private final String content;
 	private final Type type;
+	private TextDecoration[] decorations;
 	
 	private final ClickEvent clickEvent;
 	
@@ -22,18 +24,26 @@ public class Text {
 		return new Text().nl();
 	}
 	
-	public Text() {
-		this("", Type.DEFAULT);
+	public Text(TextDecoration... decorations) {
+		this("", Type.DEFAULT, decorations);
 	}
-	public Text(String content, Type type) {
+	public Text(String content, Type type, TextDecoration... decorations) {
 		this.content = content;
 		this.type = type;
+		this.decorations = decorations;
 		this.clickEvent = null;
 	}
-	public Text(String content, ClickEvent clickEvent) {
+	public Text(String content, ClickEvent clickEvent, TextDecoration... decorations) {
 		this.content = content;
 		this.type = Type.CLICKABLE;
+		this.decorations = decorations;
 		this.clickEvent = clickEvent;
+	}
+	
+	/** Overwrites the object´s decorations. */
+	public Text setDecorations(TextDecoration... decorations) {
+		this.decorations = decorations;
+		return this;
 	}
 	
 	// Appending
@@ -46,9 +56,7 @@ public class Text {
 		}
 		return this;
 	}
-	public Text tab() {
-		return append(new Text("	", Type.DEFAULT));
-	}
+	
 	public Text append(Text text) {
 		if(next == null) {
 			next = text;
@@ -68,19 +76,18 @@ public class Text {
 		return append(new Text(defaultText, Type.DEFAULT));
 	}
 	
-	
-	TextComponent build() {
-		TextComponent.Builder builder = Component.text().content(content).color(type.getColor());
+	Component build() {
+		var builder = Component.text()
+				.content(content)
+				.color(type.getColor())
+				.decorate(decorations);
 		
 		if(clickEvent != null) {
 			builder.clickEvent(clickEvent);
 		}
 		
-		if(next != null) {
-			builder.append(next.build());
-		}
-		
-		return builder.build();
+		var childComponents = children.stream().reduce(Component.empty(), (acc, child) -> acc.append(child.build()), TextComponent::append);
+		return Component.join(JoinConfiguration.noSeparators(), builder, childComponents);
 	}
 	
 	public enum Type {
@@ -103,4 +110,5 @@ public class Text {
 		}
 		
 	}
+	
 }

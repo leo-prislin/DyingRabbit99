@@ -10,13 +10,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PortalCmd extends Cmd {
 	
 	private static class Portal {
 		
-		private boolean imaginary;
 		private final Block centeredBlock;
 		
 		public Portal(Block anyPortalBlock) {
@@ -58,21 +56,21 @@ public class PortalCmd extends Cmd {
 			return centeredBlock;
 		}
 		public World getWorld() {
-			return centeredBlock.getWorld();
+			return getBlock().getWorld();
 		}
 		public Location getLocation() {
-			return centeredBlock.getLocation();
+			return getBlock().getLocation();
 		}
 		public boolean isInNether() {
-			return centeredBlock.getWorld().getEnvironment() == World.Environment.NETHER;
+			return getBlock().getWorld().getEnvironment() == World.Environment.NETHER;
 		}
 		public boolean exists() {
-			return centeredBlock.getType() == Material.NETHER_PORTAL;
+			return getBlock().getType() == Material.NETHER_PORTAL;
 		}
 		
 		/** The returned Location may have floating point coordinates. */
 		public Location getOptimalCorrespondingLocation(World otherWorld) {
-			if(centeredBlock.getWorld().getEnvironment() == otherWorld.getEnvironment()) {
+			if(getBlock().getWorld().getEnvironment() == otherWorld.getEnvironment()) {
 				throw new IllegalArgumentException("Parameter otherWorld must not be of the same environment as this portal.");
 			}
 			if(isInNether()) {
@@ -116,11 +114,14 @@ public class PortalCmd extends Cmd {
 		
 		/**
 		 * Returns true if the portals orientation is x, false otherwise.
-		 * @throws RuntimeException If parameter portalBlock isn´t of type Nether_Portal.
 		 */
 		private boolean getOrientation() {
-			return getOrientation(centeredBlock);
+			return getOrientation(getBlock());
 		}
+		/**
+		 * Returns true if the portals orientation is x, false otherwise.
+		 * @throws RuntimeException If parameter portalBlock isn´t of type Nether_Portal.
+		 */
 		private static boolean getOrientation(Block somePortalBlock) {
 			String data = somePortalBlock.getBlockData().getAsString();
 			if(data.startsWith("minecraft:nether_portal[axis=")) {
@@ -142,18 +143,16 @@ public class PortalCmd extends Cmd {
 		@Override
 		public boolean equals(Object otherPortal) {
 			if(otherPortal instanceof Portal p) {
-				return centeredBlock.equals(p.centeredBlock);
+				return getBlock().equals(p.getBlock());
 			}
 			return false;
 		}
 	}
 	
-	private final ArrayList<Portal> ps = new ArrayList<>();
+	private final ArrayList<Portal> portals = new ArrayList<>();
 	
 	
-	private final ArrayList<Block> portals = new ArrayList<>();
 	private final HashMap<String, Profile> profiles = new HashMap<>();
-	
 	private static class Profile {
 		private final HashMap<String, Location> imaginaryPortals = new HashMap<>();
 	}
@@ -174,10 +173,10 @@ public class PortalCmd extends Cmd {
 					sender,
 					new Text("Simuliere...", Text.Type.DEFAULT)
 							.nl().appendDefault("Echte Portale:")
-							.appendCollection(ps, (portal) -> {
+							.appendCollection(portals, (portal) -> {
 								// Real Portal
 								
-								List<Portal> compatiblePortals = ps.stream().filter(portal::isPortalCompatible).toList();
+								List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
 								
 								Text text = Text.newLine()
 										.append(portal.toText());
@@ -277,10 +276,10 @@ public class PortalCmd extends Cmd {
 			
 			// Remove portals that don´t exist anymore
 			int removedPortals = 0;
-			for(int i = 0; i < ps.size(); i++) {
-				Portal portal = ps.get(i);
+			for(int i = 0; i < portals.size(); i++) {
+				Portal portal = portals.get(i);
 				if(!portal.exists()) {
-					ps.remove(portal);
+					portals.remove(portal);
 					i--;
 					removedPortals++;
 				}
@@ -294,8 +293,8 @@ public class PortalCmd extends Cmd {
 						// Add found nether portal
 						if(block.getType() == Material.NETHER_PORTAL) {
 							Portal portal = new Portal(block);
-							if(!ps.contains(portal)) {
-								ps.add(portal);
+							if(!portals.contains(portal)) {
+								portals.add(portal);
 								addedPortals++;
 							}
 						}
@@ -379,87 +378,6 @@ public class PortalCmd extends Cmd {
 			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
 		}
 		return true;
-	}
-	
-	
-	
-	
-	/**
-	 * Returns true if the portals orientation is x, false otherwise.
-	 * @throws RuntimeException If parameter portalBlock isn´t of type Nether_Portal.
-	 */
-	private boolean getPortalOrientation(Block portalBlock) {
-		String data = portalBlock.getBlockData().getAsString();
-		if(data.startsWith("minecraft:nether_portal[axis=")) {
-			return data.charAt(29) == 'x';
-		}
-		else throw new RuntimeException("The portal´s BlockData should start with \"minecraft:nether_portal[axis=\"... but is actually \"" + data + "\".");
-	}
-	private Block getCenteredPortalBlock(Block anyPortalBlock) {
-		if(anyPortalBlock.getType() != Material.NETHER_PORTAL) {
-			throw new IllegalArgumentException("Parameter anyPortalBlock must be of Type NETHER_PORTAL.");
-		}
-		// Adjust Y
-		while(anyPortalBlock.getRelative(0, -1, 0).getType() == Material.NETHER_PORTAL) {
-			anyPortalBlock = anyPortalBlock.getRelative(0, -1, 0);
-		}
-		// Adjust X
-		if(getPortalOrientation(anyPortalBlock)) {
-			int lowerBound = 0;
-			while(anyPortalBlock.getRelative(lowerBound-1, 0, 0).getType() == Material.NETHER_PORTAL) {
-				lowerBound--;
-			}
-			int higherOffset = 0;
-			while(anyPortalBlock.getRelative(higherOffset+1, 0, 0).getType() == Material.NETHER_PORTAL) {
-				higherOffset++;
-			}
-			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt((higherOffset+anyPortalBlock.getX())/2 + (lowerBound+anyPortalBlock.getX())/2, anyPortalBlock.getY(), anyPortalBlock.getZ());
-		}
-		// Adjust Z
-		else {
-			int lowerOffset = 0;
-			while(anyPortalBlock.getRelative(0, 0, lowerOffset-1).getType() == Material.NETHER_PORTAL) {
-				lowerOffset--;
-			}
-			int higherOffset = 0;
-			while(anyPortalBlock.getRelative(0, 0, higherOffset+1).getType() == Material.NETHER_PORTAL) {
-				higherOffset++;
-			}
-			anyPortalBlock = anyPortalBlock.getWorld().getBlockAt(anyPortalBlock.getX(), anyPortalBlock.getY(), (higherOffset+anyPortalBlock.getZ())/2 + (lowerOffset+anyPortalBlock.getZ())/2);
-		}
-		return anyPortalBlock;
-	}
-	
-	
-	private Text realPortalToText(Block portalBlock) {
-		return new Text(
-				"[P] " + (portalBlock.getWorld().getEnvironment() == World.Environment.NETHER ? "N" : "OW") +
-						" <" + portalBlock.getX() + " " + portalBlock.getY() + " " + portalBlock.getZ() + ">",
-				(portalBlock.getWorld().getEnvironment() == World.Environment.NETHER) ? Text.Type.NETHER : Text.Type.OVERWORLD
-		);
-	}
-	private Text imaginaryPortalAsString(String name, Location portalLocation) {
-		return new Text("[" + name + "] <" + portalLocation.getBlockX() + " " + portalLocation.getBlockY() + " " + portalLocation.getBlockZ() + ">", Text.Type.DEFAULT);
-	}
-	
-	
-	private List<Block> getCompatiblePortals(Block portal, Collection<Block> portals) {
-		return portals.stream()
-				.filter((block) -> isPortalCompatible(portal, block))
-				.collect(Collectors.toList());
-	}
-	private boolean isPortalCompatible(Block portal0, Block portal1) {
-		if(portal0.getWorld().getEnvironment() == World.Environment.NORMAL) {
-			return portal1.getWorld().getEnvironment() == World.Environment.NETHER &&
-					Math.abs(portal0.getX()/8.0 - portal1.getX()) <= 16.0 &&
-					Math.abs(portal0.getZ()/8.0 - portal1.getZ()) <= 16.0;
-		}
-		else if(portal0.getWorld().getEnvironment() == World.Environment.NETHER) {
-			return portal0.getWorld().getEnvironment() == World.Environment.NORMAL &&
-					Math.abs(portal0.getX()*8 - portal1.getX()) <= 128 &&
-					Math.abs(portal0.getZ()*8 - portal1.getZ()) <= 128;
-		}
-		else throw new RuntimeException("The portalBlock´s environment is neither in a NORMAL nor a NETHER world.");
 	}
 	
 }

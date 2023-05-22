@@ -14,6 +14,120 @@ import java.util.stream.Collectors;
 
 public class PortalCmd extends Cmd {
 	
+	private abstract static class Portal {
+		
+		private boolean imaginary;
+		private final Block centeredBlock;
+		
+		public Portal(Block anyPortalBlock) {
+			if(anyPortalBlock.getType() != Material.NETHER_PORTAL) {
+				throw new IllegalArgumentException("Parameter anyPortalBlock must be of Type NETHER_PORTAL.");
+			}
+			// Adjust Y
+			while(anyPortalBlock.getRelative(0, -1, 0).getType() == Material.NETHER_PORTAL) {
+				anyPortalBlock = anyPortalBlock.getRelative(0, -1, 0);
+			}
+			// Adjust X
+			if(getOrientation(anyPortalBlock)) {
+				int lowerBound = 0;
+				while(anyPortalBlock.getRelative(lowerBound-1, 0, 0).getType() == Material.NETHER_PORTAL) {
+					lowerBound--;
+				}
+				int higherOffset = 0;
+				while(anyPortalBlock.getRelative(higherOffset+1, 0, 0).getType() == Material.NETHER_PORTAL) {
+					higherOffset++;
+				}
+				anyPortalBlock = anyPortalBlock.getWorld().getBlockAt((higherOffset+anyPortalBlock.getX())/2 + (lowerBound+anyPortalBlock.getX())/2, anyPortalBlock.getY(), anyPortalBlock.getZ());
+			}
+			// Adjust Z
+			else {
+				int lowerOffset = 0;
+				while(anyPortalBlock.getRelative(0, 0, lowerOffset-1).getType() == Material.NETHER_PORTAL) {
+					lowerOffset--;
+				}
+				int higherOffset = 0;
+				while(anyPortalBlock.getRelative(0, 0, higherOffset+1).getType() == Material.NETHER_PORTAL) {
+					higherOffset++;
+				}
+				anyPortalBlock = anyPortalBlock.getWorld().getBlockAt(anyPortalBlock.getX(), anyPortalBlock.getY(), (higherOffset+anyPortalBlock.getZ())/2 + (lowerOffset+anyPortalBlock.getZ())/2);
+			}
+			this.centeredBlock = anyPortalBlock;
+		}
+		
+		public Block getBlock() {
+			return centeredBlock;
+		}
+		public World getWorld() {
+			return centeredBlock.getWorld();
+		}
+		public Location getLocation() {
+			return centeredBlock.getLocation();
+		}
+		public boolean isInNether() {
+			return centeredBlock.getWorld().getEnvironment() == World.Environment.NETHER;
+		}
+		
+		/** The returned Location may have floating point coordinates. */
+		public Location getOptimalCorrespondingLocation(World otherWorld) {
+			if(centeredBlock.getWorld().getEnvironment() == otherWorld.getEnvironment()) {
+				throw new IllegalArgumentException("Parameter otherWorld must not be of the same environment as this portal.");
+			}
+			if(isInNether()) {
+				return new Location(otherWorld, getLocation().getX()*8, getLocation().getY(), getLocation().getZ()*8);
+			}
+			else {
+				return new Location(otherWorld, getLocation().getX()/8.0, getLocation().getY(), getLocation().getZ()/8.0);
+			}
+		}
+		/** Checks if the otherPortal could be reached when entering this portal and no better options exist. */
+		public boolean isPortalCompatible(Portal otherPortal) {
+			if(isInNether()) {
+				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
+				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 128 &&
+						Math.abs(optimalCorrespondingLocation.getBlockZ() - otherPortal.getLocation().getBlockZ()) <= 128;
+			}
+			else {
+				Location optimalCorrespondingLocation = getOptimalCorrespondingLocation(otherPortal.getWorld());
+				return Math.abs(optimalCorrespondingLocation.getBlockX() - otherPortal.getLocation().getBlockX()) <= 16 &&
+						Math.abs(optimalCorrespondingLocation.getBlockZ() - otherPortal.getLocation().getBlockZ()) <= 16;
+			}
+		}
+		
+		/** @throws IllegalArgumentException If parameter otherPortals is empty. */
+		public Portal getClosestPortal(Collection<Portal> otherPortals) {
+			Optional<Portal> closest = otherPortals.stream().min(
+					Comparator.comparingDouble(
+							(otherPortal) -> getLocation().distanceSquared(otherPortal.getLocation())
+					)
+			);
+			if(closest.isPresent()) {
+				return closest.get();
+			}
+			else {
+				throw new IllegalArgumentException("Parameter otherPortals must not be empty.");
+			}
+		}
+		
+		/**
+		 * Returns true if the portals orientation is x, false otherwise.
+		 * @throws RuntimeException If parameter portalBlock isn´t of type Nether_Portal.
+		 */
+		private boolean getOrientation() {
+			return getOrientation(centeredBlock);
+		}
+		private static boolean getOrientation(Block somePortalBlock) {
+			String data = somePortalBlock.getBlockData().getAsString();
+			if(data.startsWith("minecraft:nether_portal[axis=")) {
+				return data.charAt(29) == 'x';
+			}
+			else throw new RuntimeException("The portal´s BlockData should start with \"minecraft:nether_portal[axis=\"... but is actually \"" + data + "\".");
+		}
+		
+	}
+	
+	private final ArrayList<Portal> ps = new ArrayList<>();
+	
+	
 	private final ArrayList<Block> portals = new ArrayList<>();
 	private final HashMap<String, Profile> profiles = new HashMap<>();
 	
@@ -253,7 +367,7 @@ public class PortalCmd extends Cmd {
 	
 	/**
 	 * Returns true if the portals orientation is x, false otherwise.
-	 * Throws a RuntimeException if block isn´t a Nether_Portal.
+	 * @throws RuntimeException If parameter portalBlock isn´t of type Nether_Portal.
 	 */
 	private boolean getPortalOrientation(Block portalBlock) {
 		String data = portalBlock.getBlockData().getAsString();

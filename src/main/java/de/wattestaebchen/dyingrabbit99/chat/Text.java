@@ -3,21 +3,22 @@ package de.wattestaebchen.dyingrabbit99.chat;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.files.Config;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Function;
 
 public class Text {
 	
-	private Text next = null;
+	private final ArrayList<Text> children = new ArrayList<>();
 	private final String content;
 	private final Type type;
 	private TextDecoration[] decorations;
-	
 	private final ClickEvent clickEvent;
 	
 	public static Text newLine() {
@@ -40,7 +41,6 @@ public class Text {
 		this.clickEvent = clickEvent;
 	}
 	
-	/** Overwrites the object´s decorations. */
 	public Text setDecorations(TextDecoration... decorations) {
 		this.decorations = decorations;
 		return this;
@@ -58,12 +58,7 @@ public class Text {
 	}
 	
 	public Text append(Text text) {
-		if(next == null) {
-			next = text;
-		}
-		else {
-			next.append(text);
-		}
+		children.add(text);
 		return this;
 	}
 	public <T> Text appendCollection(Collection<T> collection, Function<T, Text> appendElement) {
@@ -81,12 +76,11 @@ public class Text {
 				.content(content)
 				.color(type.getColor())
 				.decorate(decorations);
-		
 		if(clickEvent != null) {
 			builder.clickEvent(clickEvent);
 		}
 		
-		var childComponents = children.stream().reduce(Component.empty(), (acc, child) -> acc.append(child.build()), TextComponent::append);
+		TextComponent childComponents = children.stream().reduce(Component.empty(), (acc, child) -> acc.append(child.build()), TextComponent::append);
 		return Component.join(JoinConfiguration.noSeparators(), builder, childComponents);
 	}
 	

@@ -218,17 +218,8 @@ public class PortalCmd extends Cmd {
 	private List<ImaginaryPortal> getImaginaryPortals() {
 		return portals.stream().filter((portal) -> portal instanceof ImaginaryPortal).map((portal) -> (ImaginaryPortal) portal).toList();
 	}
-	
 	private ImaginaryPortal getImaginaryPortalByName(String name) {
 		return getImaginaryPortals().stream().filter((portal) -> portal.getName().equals(name)).findFirst().orElse(null);
-	}
-	
-	@SubCommandExecutor(label = "test", cmdParams = {"sender"})
-	public boolean test(CommandSender sender) {
-		var a = new Text("a", Text.Type.OVERWORLD, TextDecoration.BOLD);
-		var b = new Text("b", Text.Type.OVERWORLD);
-		Chat.send(sender, a.append(b));
-		return true;
 	}
 	
 	@CommandExecutor(cmdParams = {"sender"})

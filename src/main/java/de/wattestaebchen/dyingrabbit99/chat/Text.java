@@ -17,7 +17,6 @@ public class Text {
 	private final String content;
 	private final Type type;
 	private TextDecoration[] decorations;
-	
 	private final ClickEvent clickEvent;
 	
 	public static Text newLine() {
@@ -40,7 +39,6 @@ public class Text {
 		this.clickEvent = clickEvent;
 	}
 	
-	/** Overwrites the object´s decorations. */
 	public Text setDecorations(TextDecoration... decorations) {
 		this.decorations = decorations;
 		return this;
@@ -81,12 +79,11 @@ public class Text {
 				.content(content)
 				.color(type.getColor())
 				.decorate(decorations);
-		
 		if(clickEvent != null) {
 			builder.clickEvent(clickEvent);
 		}
 		
-		var childComponents = children.stream().reduce(Component.empty(), (acc, child) -> acc.append(child.build()), TextComponent::append);
+		TextComponent childComponents = children.stream().reduce(Component.empty(), (acc, child) -> acc.append(child.build()), TextComponent::append);
 		return Component.join(JoinConfiguration.noSeparators(), builder, childComponents);
 	}
 	

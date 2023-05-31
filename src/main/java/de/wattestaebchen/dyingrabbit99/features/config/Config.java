@@ -1,7 +1,6 @@
-package de.wattestaebchen.dyingrabbit99.files;
+package de.wattestaebchen.dyingrabbit99.features.config;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;

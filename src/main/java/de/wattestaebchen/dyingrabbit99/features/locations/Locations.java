@@ -1,4 +1,4 @@
-package de.wattestaebchen.dyingrabbit99.files;
+package de.wattestaebchen.dyingrabbit99.features.locations;
 
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;

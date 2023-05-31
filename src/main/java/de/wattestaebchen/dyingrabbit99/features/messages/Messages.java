@@ -1,8 +1,8 @@
-package de.wattestaebchen.dyingrabbit99;
+package de.wattestaebchen.dyingrabbit99.features.messages;
 
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
-import de.wattestaebchen.dyingrabbit99.files.Config;
+import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.Objects;
 
-public class Events implements Listener {
+public class Messages implements Listener {
 	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {

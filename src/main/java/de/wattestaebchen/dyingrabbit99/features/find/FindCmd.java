@@ -1,7 +1,8 @@
-package de.wattestaebchen.dyingrabbit99.commands;
+package de.wattestaebchen.dyingrabbit99.features.find;
 
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
+import de.wattestaebchen.dyingrabbit99.Cmd;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;

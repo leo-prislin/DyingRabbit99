@@ -1,8 +1,8 @@
-package de.wattestaebchen.dyingrabbit99.commands;
+package de.wattestaebchen.dyingrabbit99.features.locations;
 
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
-import de.wattestaebchen.dyingrabbit99.files.Locations;
+import de.wattestaebchen.dyingrabbit99.Cmd;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;

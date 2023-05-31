@@ -2,12 +2,13 @@ package de.wattestaebchen.dyingrabbit99;
 
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
-import de.wattestaebchen.dyingrabbit99.commands.ConfigCmd;
-import de.wattestaebchen.dyingrabbit99.commands.FindCmd;
-import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
-import de.wattestaebchen.dyingrabbit99.commands.PortalCmd;
-import de.wattestaebchen.dyingrabbit99.files.Config;
-import de.wattestaebchen.dyingrabbit99.files.Locations;
+import de.wattestaebchen.dyingrabbit99.features.config.ConfigCmd;
+import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
+import de.wattestaebchen.dyingrabbit99.features.locations.LocationCmd;
+import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
+import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
+import de.wattestaebchen.dyingrabbit99.features.config.Config;
+import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -31,7 +32,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		new Locations();
 		
 		// Registering Events
-		Bukkit.getPluginManager().registerEvents(new Events(), this);
+		Bukkit.getPluginManager().registerEvents(new Messages(), this);
 		
 		// Registering Commands
 		Objects.requireNonNull(getCommand("find")).setExecutor(new FindCmd());
@@ -55,6 +56,9 @@ public class DyingRabbit99 extends JavaPlugin {
 		Locations.save();
 		
 	}
+	
+	
+	
 	
 	public static NamedTextColor getColor(String color) throws NoSuchElementException {
 		return NamedTextColor.NAMES.valueOrThrow(color);

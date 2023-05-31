@@ -9,7 +9,7 @@ Please note, that all the text you find in this plugin is German (my first langu
 
 ### Current features
  - Config: Edit the plugin´s options by accessing the config.yml file or by using /config.
- - Find: Retrieve the coordinates of any player who is currently online.
+ - Find: Look up the coordinates of any player who is currently online.
  - Locations: Save any location in your world and access it to find back to your home, nether portal, giant creeper farm or the diamonds you left behind, because you forgot your fortune pickaxe.
  - Messages: Configure individual messages to be sent at certain events.
    - OnPlayerJoinMessage: Configure a welcome message that is always sent to a player when he joins.
@@ -19,8 +19,8 @@ Please note, that all the text you find in this plugin is German (my first langu
 
 ### Planned features
  - Option to make several helpful calculations with your locations. (E.G. How big is that village radius; etc.) (Things you could search on the minecraft wiki for to then type complex formulas into your calculator)
+ - Command to help you build circles/spheres.
  - Command to look up crafting recipes.
- - Command to look up the current location of other players. (With privacy settings)
  - Adding a language option and adding English as language.
 
 Note that all these planned features are not necessarily already in development. Usually you can assume that only features, you can find an open branch about, are currently in development. You are welcome to contribute to this project by implementing other features you find on this list.

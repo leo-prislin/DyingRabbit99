@@ -1,29 +1,27 @@
 package de.wattestaebchen.dyingrabbit99.features.locations;
 
-import de.wattestaebchen.dyingrabbit99.chat.Chat;
-import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import de.wattestaebchen.dyingrabbit99.chat.Text;
+import de.wattestaebchen.dyingrabbit99.features.config.CustomConfig;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Set;
 
-public class Locations {
+public class Locations extends CustomConfig {
 
 	private static Locations instance;
-
+	/*
 	private FileConfiguration config = null;
 	private File file;
-
-	public Locations() {
-
-		instance = this;
-
+	 */
+	private Locations() {
+		super("locations", "locations.yml");
 	}
-
+	
+	public static void init() {
+		instance = new Locations();
+	}
+	
+	/*
 	public static FileConfiguration get() {
 		if(instance.config == null) {
 			if(instance.file == null) {
@@ -33,7 +31,7 @@ public class Locations {
 		}
 		return instance.config;
 	}
-
+	
 	public static void save() {
 		if(instance.config != null && instance.file != null) {
 			try {
@@ -42,6 +40,13 @@ public class Locations {
 				Chat.sendToConsole(new Text("Saving locations failed", Text.Type.ERROR));
 			}
 		}
+	}
+	 */
+	public static FileConfiguration get() {
+		return instance.getConfig();
+	}
+	public static void save() {
+		instance.saveConfig();
 	}
 	
 	

@@ -29,7 +29,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		instance = this;
 		
-		new Locations();
+		Locations.init();
 		
 		// Registering Events
 		Bukkit.getPluginManager().registerEvents(new Messages(), this);

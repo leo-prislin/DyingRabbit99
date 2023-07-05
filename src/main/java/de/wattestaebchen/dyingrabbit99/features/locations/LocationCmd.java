@@ -16,7 +16,7 @@ public class LocationCmd extends Cmd {
 	public boolean set(CommandSender sender, String name) {
 		if(sender instanceof Player p) {
 			boolean overwritten = Locations.isSet(name);
-			Locations.setLocation(name, p.getLocation());
+			Locations.setLocation(name, p.getLocation().getBlock().getLocation());
 			if(overwritten) Chat.send(sender, new Text("Eintrag erfolgreich überschrieben.", Text.Type.SUCCESS));
 			else Chat.send(sender, new Text("Eintrag erfolgreich erstellt.", Text.Type.SUCCESS));
 		}
@@ -79,11 +79,16 @@ public class LocationCmd extends Cmd {
 							", z: " +location.getBlockZ(),
 					Text.Type.DEFAULT);
 			if(sender instanceof Player p && p.getLocation().getWorld().equals(location.getWorld())) {
-				int directDistance = (int) p.getLocation().distance(location);
+				Location playerLoc = p.getLocation().getBlock().getLocation();
+				double euclideanDistance = ((double)(int)(playerLoc.distance(location)*100))/100;
+				int manhattanDistance = Math.abs(playerLoc.getBlockX() - location.getBlockX())
+						+ Math.abs(playerLoc.getBlockY() - location.getBlockY())
+						+ Math.abs(playerLoc.getBlockZ() - location.getBlockZ());
 				text.nl().appendDefault(
-						"Du bist " + directDistance +
-								(directDistance==1 ? " Block" : " Blöcke") +
-								" davon entfernt."
+						"Du bist " + euclideanDistance +
+								(euclideanDistance==1.0 ? " Block" : " Blöcke") + " (euklidisch) bzw. " +
+								manhattanDistance + (manhattanDistance==1 ? " Block" : " Blöcke") +
+								" (Manhattan) davon entfernt."
 				);
 			}
 			Chat.send(sender, text);

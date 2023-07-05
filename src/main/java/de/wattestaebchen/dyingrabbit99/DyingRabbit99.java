@@ -42,7 +42,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		saveDefaultConfig();
 		
 		
-		DyingRabbit99.sendToConsole(Component.text().content("DyingRabbit99 [INDEV-1.0.3] erfolgreich geladen").build(), DyingRabbit99.MessageType.SUCCESS);
+		DyingRabbit99.sendToConsole(Component.text().content("DyingRabbit99 [INDEV-1.1.0] erfolgreich geladen").build(), DyingRabbit99.MessageType.SUCCESS);
 		
 	}
 	

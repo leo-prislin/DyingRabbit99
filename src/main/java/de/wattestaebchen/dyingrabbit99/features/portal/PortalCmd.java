@@ -15,12 +15,14 @@ import java.util.List;
 
 public class PortalCmd extends Cmd {
 	
-	private final ArrayList<Portal> portals = new ArrayList<>();
+	private ArrayList<Portal> getPortals() {
+		return Portals.getPortals();
+	}
 	private List<RealPortal> getRealPortals() {
-		return portals.stream().filter((portal) -> portal instanceof RealPortal).map((portal) -> (RealPortal) portal).toList();
+		return getPortals().stream().filter((portal) -> portal instanceof RealPortal).map((portal) -> (RealPortal) portal).toList();
 	}
 	private List<ImaginaryPortal> getImaginaryPortals() {
-		return portals.stream().filter((portal) -> portal instanceof ImaginaryPortal).map((portal) -> (ImaginaryPortal) portal).toList();
+		return getPortals().stream().filter((portal) -> portal instanceof ImaginaryPortal).map((portal) -> (ImaginaryPortal) portal).toList();
 	}
 	private ImaginaryPortal getImaginaryPortalByName(String name) {
 		return getImaginaryPortals().stream().filter((portal) -> portal.getName().equals(name)).findFirst().orElse(null);
@@ -33,8 +35,8 @@ public class PortalCmd extends Cmd {
 				sender,
 				new Text("Simuliere...", Text.Type.DEFAULT)
 						.nl().appendDefault("Portale:")
-						.appendCollection(portals, (portal) -> {
-							List<Portal> compatiblePortals = portals.stream().filter(portal::isPortalCompatible).toList();
+						.appendCollection(getPortals(), (portal) -> {
+							List<Portal> compatiblePortals = getPortals().stream().filter(portal::isPortalCompatible).toList();
 							Text text = Text.newLine()
 									.append(portal.toText());
 							if(compatiblePortals.isEmpty()) {
@@ -74,10 +76,10 @@ public class PortalCmd extends Cmd {
 			
 			// Remove portals that don´t exist anymore
 			int removedPortals = 0;
-			for(int i = 0; i < portals.size(); i++) {
-				Portal portal = portals.get(i);
+			for(int i = 0; i < getPortals().size(); i++) {
+				Portal portal = getPortals().get(i);
 				if(portal instanceof RealPortal realPortal && !realPortal.exists()) {
-					portals.remove(portal);
+					getPortals().remove(portal);
 					i--;
 					removedPortals++;
 				}
@@ -91,8 +93,8 @@ public class PortalCmd extends Cmd {
 						// Add found nether portal
 						if(block.getType() == Material.NETHER_PORTAL) {
 							RealPortal portal = new RealPortal(block);
-							if(!portals.contains(portal)) {
-								portals.add(portal);
+							if(!getPortals().contains(portal)) {
+								getPortals().add(portal);
 								addedPortals++;
 							}
 						}
@@ -122,7 +124,7 @@ public class PortalCmd extends Cmd {
 				Chat.send(sender, new Text("Es existiert bereits ein Portal mit diesem Namen.", Text.Type.ERROR));
 				return true;
 			}
-			portals.add(new ImaginaryPortal(name, new Location(p.getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ())));
+			getPortals().add(new ImaginaryPortal(name, new Location(p.getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ())));
 			Chat.send(sender, new Text("Portal erfolgreich hinzugefügt.", Text.Type.SUCCESS));
 		}
 		else {
@@ -138,7 +140,7 @@ public class PortalCmd extends Cmd {
 			Chat.send(sender, new Text("Es existiert kein Portal mit diesem Namen.", Text.Type.ERROR));
 			return true;
 		}
-		portals.remove(portal);
+		getPortals().remove(portal);
 		Chat.send(sender, new Text("Portal erfolgreich entfernt.", Text.Type.SUCCESS));
 		return true;
 	}

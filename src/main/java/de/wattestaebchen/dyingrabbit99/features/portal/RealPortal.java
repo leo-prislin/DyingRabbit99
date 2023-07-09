@@ -1,11 +1,16 @@
 package de.wattestaebchen.dyingrabbit99.features.portal;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.jetbrains.annotations.NotNull;
 
-class RealPortal extends Portal {
+import java.util.HashMap;
+import java.util.Map;
+
+public class RealPortal extends Portal {
 	
 	private final Block centeredBlock;
 	public Block getBlock() {
@@ -89,6 +94,25 @@ class RealPortal extends Portal {
 			return this == otherPortal || getBlock().equals(p.getBlock());
 		}
 		return false;
+	}
+	
+	
+	@Override
+	public @NotNull Map<String, Object> serialize() {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("world", getWorld().getName());
+		map.put("location", getLocation());
+		return map;
+	}
+	
+	public static RealPortal deserialize(Map<String, Object> map) {
+		return new RealPortal(
+				Bukkit.getWorld(
+						(String) map.get("world")
+				).getBlockAt(
+						(Location) map.get("location")
+				)
+		);
 	}
 	
 }

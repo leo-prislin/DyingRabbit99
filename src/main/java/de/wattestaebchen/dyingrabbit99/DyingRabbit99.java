@@ -9,6 +9,7 @@ import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
 import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
 import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
+import de.wattestaebchen.dyingrabbit99.features.portal.Portals;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -29,8 +30,6 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		instance = this;
 		
-		Locations.init();
-		
 		// Registering Events
 		Bukkit.getPluginManager().registerEvents(new Messages(), this);
 		
@@ -40,9 +39,10 @@ public class DyingRabbit99 extends JavaPlugin {
 		Objects.requireNonNull(getCommand("config")).setExecutor(new ConfigCmd());
 		Objects.requireNonNull(getCommand("portal")).setExecutor(new PortalCmd());
 		
-		// Setup Config
+		// Setup Configs
 		saveDefaultConfig();
-		
+		Locations.init();
+		Portals.init();
 		
 		Chat.sendToConsole(new Text("DyingRabbit99 [INDEV-1.1.0] erfolgreich geladen", Text.Type.SUCCESS));
 		
@@ -54,6 +54,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		Config.save();
 		Locations.save();
+		Portals.save();
 		
 	}
 	

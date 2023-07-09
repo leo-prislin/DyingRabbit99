@@ -1,14 +1,16 @@
 package de.wattestaebchen.dyingrabbit99.features.portal;
 
+import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Optional;
+import java.util.*;
 
-abstract class Portal {
+abstract class Portal implements ConfigurationSerializable {
 	
 	public abstract Location getLocation();
 	public abstract World getWorld();
@@ -64,5 +66,47 @@ abstract class Portal {
 	public Text toText() {
 		return new Text(this.toString(), (isInNether() ? Text.Type.NETHER : Text.Type.OVERWORLD));
 	}
+	
+	/*
+	@Override
+	public @NotNull Map<String, Object> serialize() {
+		HashMap<String, Object> map = new HashMap<>();
+		if(this instanceof RealPortal rp) {
+			map.put("real", true);
+			map.put("world", rp.getWorld().getName());
+			map.put("location", rp.getLocation());
+		}
+		else {
+			ImaginaryPortal ip = (ImaginaryPortal) this; 
+			map.put("real", false);
+			map.put("name", ip.getName());
+			map.put("location", ip.getLocation());
+		}
+		return map;
+	}
+	
+	public static Portal deserialize(Map<String, Object> map) {
+		try {
+			if((boolean)map.get("real")) {
+				return new RealPortal(
+						Bukkit.getWorld(
+								(String) map.get("world")
+						).getBlockAt(
+								(Location) map.get("location")
+						)
+				);
+			}
+			else {
+				return new ImaginaryPortal(
+						(String) map.get("name"),
+						(Location) map.get("location")
+				);
+			}
+		}
+		catch(NullPointerException e) {
+			return null;
+		}
+	}
+	 */
 	
 }

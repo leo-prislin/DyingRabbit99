@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.Set;
 
-public class Locations extends CustomConfig {
+public final class Locations extends CustomConfig {
 
 	private static Locations instance;
 	/*

@@ -1,10 +1,15 @@
 package de.wattestaebchen.dyingrabbit99.features.portal;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.jetbrains.annotations.NotNull;
 
-class ImaginaryPortal extends Portal {
+import java.util.HashMap;
+import java.util.Map;
+
+public class ImaginaryPortal extends Portal {
 	
 	private String name;
 	public String getName() {
@@ -49,6 +54,22 @@ class ImaginaryPortal extends Portal {
 			return this == otherPortal || (getName().equals(p.getName()) && getLocation().equals(p.getLocation()));
 		}
 		return false;
+	}
+	
+	
+	@Override
+	public @NotNull Map<String, Object> serialize() {
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("name", getName());
+		map.put("location", getLocation());
+		return map;
+	}
+	
+	public static ImaginaryPortal deserialize(Map<String, Object> map) {
+		return new ImaginaryPortal(
+				(String) map.get("name"),
+				(Location) map.get("location")
+		);
 	}
 	
 }

@@ -1,5 +1,6 @@
 # DyingRabbit99
 A Minecraft Paper Plugin
+DyingRabbit99 version INDEV-1.1.0 and above is made for Minecraft 1.20
 
 ## What is DyingRabbit99
 DyingRabbit is a hobby project of mine. It´s a Minecraft Paper Plugin I´m developing for a private survival server. I use GitHub primarily for organizational reasons, but everyone is welcome to use it, suggest new features or contribute.
@@ -14,13 +15,12 @@ Please note, that all the text you find in this plugin is German (my first langu
  - Messages: Configure individual messages to be sent at certain events.
    - OnPlayerJoinMessage: Configure a welcome message that is always sent to a player when he joins.
    - PrintDeathCords: Printing your death coordinates to the chat when you die, to help you to get your stuff back in time.
- - Portal: Simulate Portals and calculate your portals destination.
+ - Portal: Simulate nether portals and calculate your portals destination.
  - More features coming soon...
 
 ### Planned features
  - Option to make several helpful calculations with your locations. (E.G. How big is that village radius; etc.) (Things you could search on the minecraft wiki for to then type complex formulas into your calculator)
- - Command to help you build circles/spheres.
- - Command to look up crafting recipes.
+ - Command to help you build circles, spheres and other shapes.
  - Adding a language option and adding English as language.
 
 Note that all these planned features are not necessarily already in development. Usually you can assume that only features, you can find an open branch about, are currently in development. You are welcome to contribute to this project by implementing other features you find on this list.

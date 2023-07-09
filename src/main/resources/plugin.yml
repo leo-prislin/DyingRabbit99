@@ -1,5 +1,5 @@
 name: DyingRabbit99
-version: INDEV-1.1.0
+version: INDEV-1.1.1
 api-version: 1.20
 main: de.wattestaebchen.dyingrabbit99.DyingRabbit99
 description: A Minecraft Paper Plugin by Wattestaebchen
@@ -21,7 +21,7 @@ permissions:
   
 commands:
   config:
-    usage: /config save/reload/reset/(get <property>)/(set <property> [value])
+    usage: /config save/reload/reset/(get<property>)/(set<property> <value>)
     description: Benutze diesen Command, um diverse Einstellungen der DyingRabbit99-Config auszulesen oder zu verändern. Achtung, nicht alle Einstellungen können über diesen Command bearbeitet werden!
     permission: dr99.config
   
@@ -38,5 +38,5 @@ commands:
     permission: dr99.location
   
   portal:
-    usage: /portal
-    description: TODO
+    usage: /portal [(scan [xBounds yBounds zBounds])/(sim (add <name>)/(rename <oldName> <newName>)/(remove <name>))]
+    description: Scanne Netherportale in deiner Welt oder simuliere sie, um dir dann die jeweiligen Portalverbindungen ausgeben zu lassen. Damit kannst du problemlos einen Nether-Hub bauen.

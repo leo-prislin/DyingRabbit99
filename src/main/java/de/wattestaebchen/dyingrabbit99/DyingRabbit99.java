@@ -44,7 +44,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Locations.init();
 		Portals.init();
 		
-		Chat.sendToConsole(new Text("DyingRabbit99 [INDEV-1.1.0] erfolgreich geladen", Text.Type.SUCCESS));
+		Chat.sendToConsole(new Text("DyingRabbit99 [INDEV-1.1.1] erfolgreich geladen", Text.Type.SUCCESS));
 		
 	}
 	

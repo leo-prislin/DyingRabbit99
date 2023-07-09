@@ -1,8 +1,8 @@
 package de.wattestaebchen.dyingrabbit99.features.config;
 
+import de.wattestaebchen.dyingrabbit99.Cmd;
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
-import de.wattestaebchen.dyingrabbit99.Cmd;
 import org.bukkit.command.CommandSender;
 
 public class ConfigCmd extends Cmd {

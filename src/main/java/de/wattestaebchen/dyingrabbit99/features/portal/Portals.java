@@ -2,7 +2,6 @@ package de.wattestaebchen.dyingrabbit99.features.portal;
 
 import de.wattestaebchen.dyingrabbit99.features.config.CustomConfig;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.util.ArrayList;

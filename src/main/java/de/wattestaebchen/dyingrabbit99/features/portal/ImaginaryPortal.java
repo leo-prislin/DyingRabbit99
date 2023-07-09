@@ -1,7 +1,6 @@
 package de.wattestaebchen.dyingrabbit99.features.portal;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;

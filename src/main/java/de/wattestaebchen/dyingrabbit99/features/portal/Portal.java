@@ -1,14 +1,13 @@
 package de.wattestaebchen.dyingrabbit99.features.portal;
 
-import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
 
 abstract class Portal implements ConfigurationSerializable {
 	

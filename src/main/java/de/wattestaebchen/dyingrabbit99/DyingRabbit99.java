@@ -2,13 +2,13 @@ package de.wattestaebchen.dyingrabbit99;
 
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
+import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import de.wattestaebchen.dyingrabbit99.features.config.ConfigCmd;
 import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.LocationCmd;
+import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
 import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
 import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
-import de.wattestaebchen.dyingrabbit99.features.config.Config;
-import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
 import de.wattestaebchen.dyingrabbit99.features.portal.Portals;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;

@@ -4,6 +4,8 @@ messageColors:
   error: "red"
   info: "blue"
   clickable: "gold"
+  overworld: "dark_green"
+  nether: "dark_red"
 
 onPlayerJoinMessage: "Hi du Lauch!"
 printDeathCordsPublic: true

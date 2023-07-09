@@ -1,16 +1,18 @@
 package de.wattestaebchen.dyingrabbit99;
 
-import de.wattestaebchen.dyingrabbit99.commands.ConfigCmd;
-import de.wattestaebchen.dyingrabbit99.commands.FindCmd;
-import de.wattestaebchen.dyingrabbit99.commands.LocationCmd;
-import de.wattestaebchen.dyingrabbit99.files.Config;
-import de.wattestaebchen.dyingrabbit99.files.Locations;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
+import de.wattestaebchen.dyingrabbit99.features.config.Config;
+import de.wattestaebchen.dyingrabbit99.features.config.ConfigCmd;
+import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
+import de.wattestaebchen.dyingrabbit99.features.locations.LocationCmd;
+import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
+import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
+import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
+import de.wattestaebchen.dyingrabbit99.features.portal.Portals;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.NoSuchElementException;
@@ -28,21 +30,21 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		instance = this;
 		
-		new Locations();
-		
 		// Registering Events
-		Bukkit.getPluginManager().registerEvents(new Events(), this);
+		Bukkit.getPluginManager().registerEvents(new Messages(), this);
 		
 		// Registering Commands
 		Objects.requireNonNull(getCommand("find")).setExecutor(new FindCmd());
 		Objects.requireNonNull(getCommand("location")).setExecutor(new LocationCmd());
 		Objects.requireNonNull(getCommand("config")).setExecutor(new ConfigCmd());
+		Objects.requireNonNull(getCommand("portal")).setExecutor(new PortalCmd());
 		
-		// Setup Config
+		// Setup Configs
 		saveDefaultConfig();
+		Locations.init();
+		Portals.init();
 		
-		
-		DyingRabbit99.sendToConsole(Component.text().content("DyingRabbit99 [INDEV-1.0.3] erfolgreich geladen").build(), DyingRabbit99.MessageType.SUCCESS);
+		Chat.sendToConsole(new Text("DyingRabbit99 [INDEV-1.1.1] erfolgreich geladen", Text.Type.SUCCESS));
 		
 	}
 	
@@ -52,58 +54,19 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		Config.save();
 		Locations.save();
+		Portals.save();
 		
 	}
 	
-	// Only static Methods!
 	
-	public static void sendToConsole(TextComponent message, MessageType type) {
-		if(type == null) {
-			Bukkit.getConsoleSender().sendMessage(
-					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message)
-			);
-		}
-		else {
-			Bukkit.getConsoleSender().sendMessage(
-					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message.color(type.getColor()))
-			);
-		}
-	}
-	public static void sendMessage(CommandSender receiver, TextComponent message, MessageType type) {
-		if(type == null) {
-			receiver.sendMessage(
-					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message)
-			);
-		}
-		else {
-			receiver.sendMessage(
-					Component.text().content("[DR99] ").color(NamedTextColor.LIGHT_PURPLE).append(message.color(type.getColor()))
-			);
-		}
-	}
-	public static void broadcastMessage(TextComponent message, MessageType type) {
-		sendToConsole(message, type);
-		for(Player p : Bukkit.getOnlinePlayers()) {
-			sendMessage(p, message, type);
-		}
-	}
 	
-	public enum MessageType {
-		DEFAULT, SUCCESS, ERROR, INFO, CLICKABLE;
-		
-		public NamedTextColor getColor() {
-			return switch (this) {
-				case DEFAULT -> DyingRabbit99.getColor(Config.getDefaultMessageColor());
-				case SUCCESS -> DyingRabbit99.getColor(Config.getSuccessMessageColor());
-				case ERROR -> DyingRabbit99.getColor(Config.getErrorMessageColor());
-				case INFO -> DyingRabbit99.getColor(Config.getInfoMessageColor());
-				case CLICKABLE -> DyingRabbit99.getColor(Config.getClickableMessageColor());
-			};
-		}
-	}
 	
 	public static NamedTextColor getColor(String color) throws NoSuchElementException {
 		return NamedTextColor.NAMES.valueOrThrow(color);
+	}
+	
+	public static Location normalizeLocation(Location location) {
+		return location.getBlock().getLocation();
 	}
 	
 	

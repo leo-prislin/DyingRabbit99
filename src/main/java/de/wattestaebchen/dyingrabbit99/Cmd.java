@@ -1,4 +1,4 @@
-package de.wattestaebchen.dyingrabbit99.commands;
+package de.wattestaebchen.dyingrabbit99;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

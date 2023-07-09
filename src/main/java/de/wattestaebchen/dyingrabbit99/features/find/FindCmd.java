@@ -1,7 +1,8 @@
-package de.wattestaebchen.dyingrabbit99.commands;
+package de.wattestaebchen.dyingrabbit99.features.find;
 
-import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import net.kyori.adventure.text.Component;
+import de.wattestaebchen.dyingrabbit99.Cmd;
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -19,25 +20,18 @@ public class FindCmd extends Cmd {
 	public boolean execute(CommandSender sender, String playerName) {
 		Player p = Bukkit.getPlayer(playerName);
 		if(p == null) {
-			DyingRabbit99.sendMessage(
-					sender,
-					Component.text().content("Der Spieler " + playerName + " wurde nicht gefunden.").build(),
-					DyingRabbit99.MessageType.ERROR
-			);
+			Chat.send(sender, new Text("Der Spieler " + playerName + " wurde nicht gefunden.", Text.Type.ERROR));
 		}
 		else {
 			Location loc = p.getLocation();
-			DyingRabbit99.sendMessage(
-					sender,
-					Component.text().content(
-							"Der Spieler " + playerName + " befindet sich gerade an den Koordinaten:" +
-									"\nworld: " + loc.getWorld().getEnvironment() +
-									", x: " + loc.getBlockX() +
-									", y: " + loc.getBlockY() +
-									", z: " + loc.getBlockZ()
-					).build(),
-					DyingRabbit99.MessageType.DEFAULT
-			);
+			Chat.send(sender, new Text(
+					"Der Spieler " + playerName + " befindet sich gerade an den Koordinaten:" +
+							"\nworld: " + loc.getWorld().getEnvironment() +
+							", x: " + loc.getBlockX() +
+							", y: " + loc.getBlockY() +
+							", z: " + loc.getBlockZ(),
+					Text.Type.DEFAULT
+			));
 		}
 		return true;
 	}

@@ -1,7 +1,6 @@
-package de.wattestaebchen.dyingrabbit99.files;
+package de.wattestaebchen.dyingrabbit99.features.config;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -39,6 +38,12 @@ public class Config {
 	}
 	public static String getClickableMessageColor() {
 		return get().getString("messageColors.clickable");
+	}
+	public static String getOverworldMessageColor() {
+		return get().getString("messageColors.overworld");
+	}
+	public static String getNetherMessageColor() {
+		return get().getString("messageColors.nether");
 	}
 	
 	

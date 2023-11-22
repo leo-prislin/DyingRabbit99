@@ -20,8 +20,9 @@ import java.util.Objects;
 
 public class DyingRabbit99 extends JavaPlugin {
 	
-	private static DyingRabbit99 instance;
+	public static final String VERSION = "INDEV-1.1.2";
 	
+	private static DyingRabbit99 instance;
 	public static DyingRabbit99 get() { return instance; }
 	
 	@Override
@@ -44,7 +45,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Locations.init();
 		Portals.init();
 		
-		Chat.sendToConsole(new Text("DyingRabbit99 [INDEV-1.1.1] erfolgreich geladen", Text.Type.SUCCESS));
+		Chat.sendToConsole(new Text("DyingRabbit99 [" + VERSION + "] erfolgreich geladen", Text.Type.SUCCESS));
 		
 	}
 	

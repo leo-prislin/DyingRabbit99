@@ -23,6 +23,7 @@ public class Config {
 	}
 	
 	
+	public static String getVersion() { return get().getString("version"); }
 	
 	public static String getDefaultMessageColor() {
 		return get().getString("messageColors.default");

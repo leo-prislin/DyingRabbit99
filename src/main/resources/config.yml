@@ -1,3 +1,5 @@
+version: "INDEV-1.1.2" # PLEASE DON'T CHANGE THIS LINE! OTHERWISE, ERRORS AND DATA LOSS MAY OCCUR!
+
 messageColors:
   default: "white"
   success: "green"

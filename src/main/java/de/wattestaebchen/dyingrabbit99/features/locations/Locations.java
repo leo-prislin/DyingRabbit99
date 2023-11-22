@@ -9,10 +9,7 @@ import java.util.Set;
 public final class Locations extends CustomConfig {
 
 	private static Locations instance;
-	/*
-	private FileConfiguration config = null;
-	private File file;
-	 */
+	
 	private Locations() {
 		super("locations", "locations.yml");
 	}
@@ -21,27 +18,6 @@ public final class Locations extends CustomConfig {
 		instance = new Locations();
 	}
 	
-	/*
-	public static FileConfiguration get() {
-		if(instance.config == null) {
-			if(instance.file == null) {
-				instance.file = new File(DyingRabbit99.get().getDataFolder(), "locations.yml");
-			}
-			instance.config = YamlConfiguration.loadConfiguration(instance.file);
-		}
-		return instance.config;
-	}
-	
-	public static void save() {
-		if(instance.config != null && instance.file != null) {
-			try {
-				instance.config.save(instance.file);
-			} catch (IOException e) {
-				Chat.sendToConsole(new Text("Saving locations failed", Text.Type.ERROR));
-			}
-		}
-	}
-	 */
 	public static FileConfiguration get() {
 		return instance.getConfig();
 	}
@@ -53,10 +29,12 @@ public final class Locations extends CustomConfig {
 	
 	public static void setLocation(String name, Location location) {
 		get().set(name, location);
+		save();
 	}
 	
 	public static void removeLocation(String name) {
 		get().set(name, null);
+		save();
 	}
 
 	public static boolean isSet(String name) {

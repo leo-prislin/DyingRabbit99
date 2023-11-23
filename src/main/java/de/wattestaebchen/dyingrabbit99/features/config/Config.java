@@ -9,6 +9,19 @@ public class Config {
 	
 	private Config() {}
 	
+	public static void init() throws OutdatedVersionException {
+		DyingRabbit99.get().saveDefaultConfig();
+		String version = getVersion();
+		if(!DyingRabbit99.VERSION.equals(version)) {
+			if(version != null && update(version)) {
+				get().set("version", DyingRabbit99.VERSION);
+				save();
+			} else {
+				throw new OutdatedVersionException(null, version);
+			}
+		}
+	}
+	
 	private static FileConfiguration get() { return DyingRabbit99.get().getConfig(); }
 	public static void save() { DyingRabbit99.get().saveConfig(); }
 	public static void reload() { DyingRabbit99.get().reloadConfig(); }
@@ -53,5 +66,15 @@ public class Config {
 	}
 	public static boolean getPrintDeathCordsPublic() { return get().getBoolean("printDeathCordsPublic"); }
 	public static void setPrintDeathCordsPublic(boolean value) { get().set("printDeathCordsPublic", value); }
+	
+	
+	
+	
+	private static boolean update(String version) {
+		if(version.equals("INDEV-1.1.2")) {
+			return true;
+		}
+		return false;
+	}
 	
 }

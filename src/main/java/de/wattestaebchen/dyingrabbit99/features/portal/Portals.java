@@ -1,6 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.features.portal;
 
 import de.wattestaebchen.dyingrabbit99.features.config.CustomConfig;
+import de.wattestaebchen.dyingrabbit99.features.config.OutdatedVersionException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
@@ -12,11 +13,11 @@ public final class Portals extends CustomConfig {
 	
 	private static ArrayList<Portal> portals;
 	
-	private Portals() {
+	private Portals() throws OutdatedVersionException {
 		super("portals", "portals.yml");
 	}
 	
-	public static void init() {
+	public static void init() throws OutdatedVersionException {
 		ConfigurationSerialization.registerClass(RealPortal.class);
 		ConfigurationSerialization.registerClass(ImaginaryPortal.class);
 		instance = new Portals();
@@ -35,4 +36,12 @@ public final class Portals extends CustomConfig {
 		return Portals.portals;
 	}
 	
+	
+	@Override
+	protected boolean update(String version) {
+		if(version.equals("INDEV-1.1.2")) {
+			return true;
+		}
+		return false;
+	}
 }

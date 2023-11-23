@@ -1,5 +1,5 @@
 name: DyingRabbit99
-version: INDEV-1.1.2
+version: INDEV-1.1.3
 api-version: 1.20
 main: de.wattestaebchen.dyingrabbit99.DyingRabbit99
 description: A Minecraft Paper Plugin by Wattestaebchen
@@ -21,7 +21,7 @@ permissions:
   
 commands:
   config:
-    usage: /config save/reload/reset/(get<property>)/(set<property> <value>)
+    usage: /config save/reload/reset/(get <property>)/(set <property> <value>)
     description: Benutze diesen Command, um diverse Einstellungen der DyingRabbit99-Config auszulesen oder zu verändern. Achtung, nicht alle Einstellungen können über diesen Command bearbeitet werden!
     permission: dr99.config
   

@@ -4,6 +4,7 @@ import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import de.wattestaebchen.dyingrabbit99.features.config.ConfigCmd;
+import de.wattestaebchen.dyingrabbit99.features.config.OutdatedVersionException;
 import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
@@ -11,6 +12,7 @@ import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
 import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
 import de.wattestaebchen.dyingrabbit99.features.portal.Portals;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -20,7 +22,7 @@ import java.util.Objects;
 
 public class DyingRabbit99 extends JavaPlugin {
 	
-	public static final String VERSION = "INDEV-1.1.2";
+	public static final String VERSION = "INDEV-1.1.3";
 	
 	private static DyingRabbit99 instance;
 	public static DyingRabbit99 get() { return instance; }
@@ -41,7 +43,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Objects.requireNonNull(getCommand("portal")).setExecutor(new PortalCmd());
 		
 		// Setup Configs
-		saveDefaultConfig();
+		Config.init();
 		Locations.init();
 		Portals.init();
 		
@@ -49,13 +51,21 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 	}
 	
+	public static boolean errorOnEnable = false;
 	
 	@Override
 	public void onDisable() {
 		
+		if(errorOnEnable) {
+			Chat.sendToConsole(new Text("Beim Start von DyingRabbit99 [" + VERSION + "] ist ein Fehler aufgetreten und das Plugin wurde wieder heruntergefahren.", Text.Type.ERROR));
+			return;
+		}
+		
 		Config.save();
 		Locations.save();
 		Portals.save();
+		
+		Chat.sendToConsole(new Text("DyingRabbit99 [" + VERSION + "] wurde heruntergefahren", Text.Type.INFO));
 		
 	}
 	

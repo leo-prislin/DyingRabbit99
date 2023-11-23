@@ -9,15 +9,21 @@ public class Config {
 	
 	private Config() {}
 	
-	public static void init() throws OutdatedVersionException {
+	public static void init() throws OutdatedConfigException {
 		DyingRabbit99.get().saveDefaultConfig();
+		
 		String version = getVersion();
-		if(!DyingRabbit99.VERSION.equals(version)) {
-			if(version != null && update(version)) {
-				get().set("version", DyingRabbit99.VERSION);
+		if(version == null) {
+			throw new OutdatedConfigException(null, null);
+		}
+		
+		while(!DyingRabbit99.VERSION.equals(version)) {
+			String newVersion = update(version);
+			if(newVersion != null) {
+				get().set("version", newVersion);
 				save();
 			} else {
-				throw new OutdatedVersionException(null, version);
+				throw new OutdatedConfigException(null, version);
 			}
 		}
 	}
@@ -70,11 +76,12 @@ public class Config {
 	
 	
 	
-	private static boolean update(String version) {
+	private static String update(String version) {
 		if(version.equals("INDEV-1.1.2")) {
-			return true;
+			// Nothing to do here
+			return "INDEV-1.1.3";
 		}
-		return false;
+		return null;
 	}
 	
 }

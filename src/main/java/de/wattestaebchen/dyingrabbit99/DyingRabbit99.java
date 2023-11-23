@@ -4,7 +4,6 @@ import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import de.wattestaebchen.dyingrabbit99.features.config.ConfigCmd;
-import de.wattestaebchen.dyingrabbit99.features.config.OutdatedVersionException;
 import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.LocationCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
@@ -12,7 +11,6 @@ import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
 import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
 import de.wattestaebchen.dyingrabbit99.features.portal.Portals;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,7 +55,7 @@ public class DyingRabbit99 extends JavaPlugin {
 	public void onDisable() {
 		
 		if(errorOnEnable) {
-			Chat.sendToConsole(new Text("Beim Start von DyingRabbit99 [" + VERSION + "] ist ein Fehler aufgetreten und das Plugin wurde wieder heruntergefahren.", Text.Type.ERROR));
+			Chat.sendToConsole(new Text("Beim Start von DyingRabbit99 [" + VERSION + "] ist ein Fehler aufgetreten und das Plugin wurde wieder heruntergefahren", Text.Type.ERROR));
 			return;
 		}
 		

@@ -2,13 +2,13 @@ package de.wattestaebchen.dyingrabbit99.features.config;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 
-public class OutdatedVersionException extends RuntimeException {
+public class OutdatedConfigException extends RuntimeException {
 	
 	public final String configName;
 	public final String version;
 	
 	
-	public OutdatedVersionException(String configName, String version) {
+	public OutdatedConfigException(String configName, String version) {
 		super();
 		this.configName = configName;
 		this.version = version;

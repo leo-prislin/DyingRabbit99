@@ -14,19 +14,31 @@ public abstract class CustomConfig {
 	private final File file;
 	private final String name;
 	
-	protected CustomConfig(String name, String filePath) throws OutdatedVersionException {
+	protected CustomConfig(String name, String filePath) throws OutdatedConfigException {
 		this.name = name;
 		this.file = new File(DyingRabbit99.get().getDataFolder(), filePath);
-		this.config = YamlConfiguration.loadConfiguration(file);
-		this.config.set("version", DyingRabbit99.VERSION);
+		try {
+			if(file.createNewFile()) {
+				config = YamlConfiguration.loadConfiguration(file);
+				config.set("version", DyingRabbit99.VERSION);
+			} else {
+				config = YamlConfiguration.loadConfiguration(file);
+			}
+		} catch(IOException e) {
+			throw new RuntimeException(e);
+		}
 		
 		String version = config.getString("version");
-		if(!DyingRabbit99.VERSION.equals(version)) {
-			if(version != null && update(version)) {
-				config.set("version", DyingRabbit99.VERSION);
+		if(version == null) {
+			throw new OutdatedConfigException(name, null);
+		}
+		while(!DyingRabbit99.VERSION.equals(version)) {
+			String newVersion = update(version);
+			if(newVersion != null) {
+				config.set("version", newVersion);
 				saveConfig();
 			} else {
-				throw new OutdatedVersionException(name, version);
+				throw new OutdatedConfigException(name, version);
 			}
 		}
 	}
@@ -45,6 +57,6 @@ public abstract class CustomConfig {
 	}
 	
 	
-	protected abstract boolean update(String version);
+	protected abstract String update(String version);
 	
 }

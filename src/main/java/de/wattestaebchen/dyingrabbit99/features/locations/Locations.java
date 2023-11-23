@@ -1,7 +1,7 @@
 package de.wattestaebchen.dyingrabbit99.features.locations;
 
 import de.wattestaebchen.dyingrabbit99.features.config.CustomConfig;
-import de.wattestaebchen.dyingrabbit99.features.config.OutdatedVersionException;
+import de.wattestaebchen.dyingrabbit99.features.config.OutdatedConfigException;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -11,11 +11,11 @@ public final class Locations extends CustomConfig {
 
 	private static Locations instance;
 	
-	private Locations() throws OutdatedVersionException {
+	private Locations() throws OutdatedConfigException {
 		super("locations", "locations.yml");
 	}
 	
-	public static void init() throws OutdatedVersionException {
+	public static void init() throws OutdatedConfigException {
 		instance = new Locations();
 	}
 	
@@ -48,10 +48,11 @@ public final class Locations extends CustomConfig {
 	
 	
 	@Override
-	protected boolean update(String version) {
+	protected String update(String version) {
 		if(version.equals("INDEV-1.1.2")) {
-			return true;
+			// Nothing to do here
+			return "INDEV-1.1.3";
 		}
-		return false;
+		return null;
 	}
 }

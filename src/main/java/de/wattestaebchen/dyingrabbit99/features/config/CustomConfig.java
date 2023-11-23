@@ -28,18 +28,25 @@ public abstract class CustomConfig {
 			throw new RuntimeException(e);
 		}
 		
-		String version = config.getString("version");
-		if(version == null) {
+		String oldVersion = getVersion();
+		if(oldVersion == null) {
 			throw new OutdatedConfigException(name, null);
 		}
-		while(!DyingRabbit99.VERSION.equals(version)) {
-			String newVersion = update(version);
+		
+		while(!DyingRabbit99.VERSION.equals(getVersion())) {
+			String newVersion = update(getVersion());
 			if(newVersion != null) {
 				config.set("version", newVersion);
-				saveConfig();
 			} else {
-				throw new OutdatedConfigException(name, version);
+				throw new OutdatedConfigException(name, getVersion());
 			}
+		}
+		saveConfig();
+		if(!oldVersion.equals(getVersion())) {
+			Chat.sendToConsole(new Text(
+					"Die " + name + "-Config wurde von v" + oldVersion + " auf v" + getVersion() + " aktualisiert",
+					Text.Type.INFO
+			));
 		}
 	}
 	
@@ -53,6 +60,17 @@ public abstract class CustomConfig {
 			config.save(file);
 		} catch(IOException e) {
 			Chat.sendToConsole(new Text("Saving CustomConfig \"" + name + "\" failed", Text.Type.ERROR));
+		}
+	}
+	
+	public String getVersion() {
+		try {
+			return config.getString("version");
+		} catch(NullPointerException e) {
+			throw new RuntimeException(
+					"Die Methode CustomConfig.getVersion() darf nicht aufgerufen werden," +
+							" bevor CustomConfig.config initialisiert wurde.", e
+			);
 		}
 	}
 	

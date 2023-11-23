@@ -39,9 +39,9 @@ public final class Portals extends CustomConfig {
 	
 	@Override
 	protected String update(String version) {
-		if(version.equals("INDEV-1.1.2")) {
+		if(version.equals("INDEV-1.1.2") || version.equals("INDEV-1.1.3")) {
 			// Nothing to do here
-			return "INDEV-1.1.3";
+			return "INDEV-1.2.0";
 		}
 		return null;
 	}

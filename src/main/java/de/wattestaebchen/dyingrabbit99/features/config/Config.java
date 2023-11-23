@@ -1,6 +1,8 @@
 package de.wattestaebchen.dyingrabbit99.features.config;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -12,19 +14,22 @@ public class Config {
 	public static void init() throws OutdatedConfigException {
 		DyingRabbit99.get().saveDefaultConfig();
 		
-		String version = getVersion();
-		if(version == null) {
+		if(getVersion() == null) {
 			throw new OutdatedConfigException(null, null);
 		}
 		
-		while(!DyingRabbit99.VERSION.equals(version)) {
-			String newVersion = update(version);
+		String oldVersion = getVersion();
+		while(!DyingRabbit99.VERSION.equals(getVersion())) {
+			String newVersion = update(getVersion());
 			if(newVersion != null) {
 				get().set("version", newVersion);
-				save();
 			} else {
-				throw new OutdatedConfigException(null, version);
+				throw new OutdatedConfigException(null, getVersion());
 			}
+		}
+		save();
+		if(!oldVersion.equals(getVersion())) {
+			Chat.sendToConsole(new Text("Die Config wurde von v" + oldVersion + " auf v" + getVersion() + " aktualisiert", Text.Type.INFO));
 		}
 	}
 	
@@ -77,9 +82,9 @@ public class Config {
 	
 	
 	private static String update(String version) {
-		if(version.equals("INDEV-1.1.2")) {
+		if(version.equals("INDEV-1.1.2") || version.equals("INDEV-1.1.3")) {
 			// Nothing to do here
-			return "INDEV-1.1.3";
+			return "INDEV-1.2.0";
 		}
 		return null;
 	}

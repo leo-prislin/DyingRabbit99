@@ -1,13 +1,13 @@
 # DyingRabbit99
 A Minecraft Paper Plugin
 
-DyingRabbit99 version INDEV-1.1.0 and above is made for Minecraft 1.20.1
+DyingRabbit99 version INDEV-1.2.0 and above is made for Minecraft Java 1.20.2
 
 ## What is DyingRabbit99
 DyingRabbit is a hobby project of mine. It´s a Minecraft Paper Plugin I´m developing for a private survival server. I use GitHub primarily for organizational reasons, but everyone is welcome to use it, suggest new features or contribute.
 
 This plugin is meant to make your survival game a little easier, without removing intended challenges.
-Please note, that all the text you find in this plugin is German (my first language). An option to switch to English language will probably be implemented in the future.
+Please note, that any text you find in this plugin is German (my first language). An option to switch to English language will probably be implemented in the future.
 
 ### Current features
  - Config: Edit the plugin´s options by accessing the config.yml file or by using /config.
@@ -30,4 +30,9 @@ Note that all these planned features are not necessarily already in development.
 The default branch "dev" is the current state of development.
 New major implementations are developed in a separate branch (usually called "feature/FEATURENAME"). When they are finished, that branch is merged into "dev".
 When "dev" is in a stable state and includes considerable improvements to the latest release, it will be released.
-Upon release a new branch is created with the release version as branch name. Also, the latest branch is updated to this new released version as well. These branches will also include a compiled DyingRabbit-VERSION.jar file, you can simply copy into your server´s plugin folder to start using this plugin.
+Every release comes with a compiled DyingRabbit-VERSION.jar file, you can simply copy into your server´s plugin folder to start using this plugin.
+
+
+## Backwards compatability
+From version INDEV-1.2.0, I´ll try to ensure backwards compatability and obviate data loss upon updating your server.
+Nevertheless, I can´t guarantee it, so please make sure to always back up your data before updating this plugin!

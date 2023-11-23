@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class DyingRabbit99 extends JavaPlugin {
 	
-	public static final String VERSION = "INDEV-1.1.3";
+	public static final String VERSION = "INDEV-1.2.0";
 	
 	private static DyingRabbit99 instance;
 	public static DyingRabbit99 get() { return instance; }
@@ -63,7 +63,7 @@ public class DyingRabbit99 extends JavaPlugin {
 		Locations.save();
 		Portals.save();
 		
-		Chat.sendToConsole(new Text("DyingRabbit99 [" + VERSION + "] wurde heruntergefahren", Text.Type.INFO));
+		Chat.sendToConsole(new Text("DyingRabbit99 [" + VERSION + "] wurde ordnungsgemäß heruntergefahren", Text.Type.INFO));
 		
 	}
 	

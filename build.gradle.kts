@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "de.wattestaebchen"
-version = "INDEV-1.1.3"
+version = "INDEV-1.2.0"
 
 repositories {
     mavenCentral()
@@ -11,7 +11,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
 }
 
 java {

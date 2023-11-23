@@ -24,7 +24,7 @@ val spigotPluginsDir: String? by project
 
 tasks {
     // This allows you to install your plugin using gradle installPlugin
-    task<Copy>("installPlugin") {
+    register<Copy>("installPlugin") {
         from(jar)
         into(spigotPluginsDir ?: error("Please set spigotPluginsDir in gradle.properties"))
     }

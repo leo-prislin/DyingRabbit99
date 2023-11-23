@@ -14,16 +14,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-    - name: Build plugin
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: build         
-    - uses: actions/upload-artifact@v3
-      with:
-        name: plugin
-        path: build/libs/*.jar
-    - name: Release
-      if: startsWith(github.ref, 'refs/tags/')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: build/libs/*.jar 
+      - name: Build plugin
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build         
+      - uses: actions/upload-artifact@v3
+        with:
+          name: plugin
+          path: build/libs/*.jar
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/libs/*.jar 

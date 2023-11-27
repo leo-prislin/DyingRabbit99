@@ -6,13 +6,14 @@ import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import de.wattestaebchen.dyingrabbit99.features.config.ConfigCmd;
 import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.LocationCmd;
-import de.wattestaebchen.dyingrabbit99.features.locations.Locations;
+import de.wattestaebchen.dyingrabbit99.features.locations.LocationsConfig;
 import de.wattestaebchen.dyingrabbit99.features.messages.Messages;
 import de.wattestaebchen.dyingrabbit99.features.portal.PortalCmd;
-import de.wattestaebchen.dyingrabbit99.features.portal.Portals;
+import de.wattestaebchen.dyingrabbit99.features.portal.PortalsConfig;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.NoSuchElementException;
@@ -20,7 +21,7 @@ import java.util.Objects;
 
 public class DyingRabbit99 extends JavaPlugin {
 	
-	public static final String VERSION = "INDEV-1.2.0";
+	public static final String VERSION = "INDEV-1.2.1";
 	
 	private static DyingRabbit99 instance;
 	public static DyingRabbit99 get() { return instance; }
@@ -42,8 +43,8 @@ public class DyingRabbit99 extends JavaPlugin {
 		
 		// Setup Configs
 		Config.init();
-		Locations.init();
-		Portals.init();
+		LocationsConfig.init();
+		PortalsConfig.init();
 		
 		Chat.sendToConsole(new Text("DyingRabbit99 [" + VERSION + "] erfolgreich geladen", Text.Type.SUCCESS));
 		
@@ -60,8 +61,8 @@ public class DyingRabbit99 extends JavaPlugin {
 		}
 		
 		Config.save();
-		Locations.save();
-		Portals.save();
+		LocationsConfig.save();
+		PortalsConfig.save();
 		
 		Chat.sendToConsole(new Text("DyingRabbit99 [" + VERSION + "] wurde ordnungsgemäß heruntergefahren", Text.Type.INFO));
 		
@@ -78,6 +79,14 @@ public class DyingRabbit99 extends JavaPlugin {
 		return location.getBlock().getLocation();
 	}
 	
+	public static Text.Type enviromentToTextType(World.Environment e) {
+		return switch(e) {
+			case NORMAL -> Text.Type.OVERWORLD;
+			case NETHER -> Text.Type.NETHER;
+			case THE_END -> Text.Type.THE_END;
+			case CUSTOM -> Text.Type.SPECIAL;
+		};
+	}
 	
 	
 }

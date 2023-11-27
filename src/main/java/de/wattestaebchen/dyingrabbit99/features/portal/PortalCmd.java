@@ -16,7 +16,7 @@ import java.util.List;
 public class PortalCmd extends Cmd {
 	
 	private ArrayList<Portal> getPortals() {
-		return Portals.getPortals();
+		return PortalsConfig.getPortals();
 	}
 	private List<RealPortal> getRealPortals() {
 		return getPortals().stream().filter((portal) -> portal instanceof RealPortal).map((portal) -> (RealPortal) portal).toList();

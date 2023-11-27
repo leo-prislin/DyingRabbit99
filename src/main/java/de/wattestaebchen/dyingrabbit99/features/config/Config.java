@@ -52,6 +52,9 @@ public class Config {
 	public static String getDefaultMessageColor() {
 		return get().getString("messageColors.default");
 	}
+	public static String getSpecialMessageColor() {
+		return get().getString("messageColors.special");
+	}
 	public static String getSuccessMessageColor() {
 		return get().getString("messageColors.success");
 	}
@@ -61,15 +64,13 @@ public class Config {
 	public static String getInfoMessageColor() {
 		return get().getString("messageColors.info");
 	}
-	public static String getClickableMessageColor() {
-		return get().getString("messageColors.clickable");
-	}
 	public static String getOverworldMessageColor() {
 		return get().getString("messageColors.overworld");
 	}
 	public static String getNetherMessageColor() {
 		return get().getString("messageColors.nether");
 	}
+	public static String getTheEndMessageColor() { return get().getString("messageColors.the_end"); }
 	
 	
 	public static String getOnPlayerJoinMessage() {
@@ -86,7 +87,13 @@ public class Config {
 			// Nothing to do here
 			return "INDEV-1.2.0";
 		}
-		return null;
+		else if(version.equals("INDEV-1.2.0")) {
+			get().set("messageColors.the_end", "dark_blue");
+			get().set("messageColors.special", "gold");
+			get().set("messageColors.clickable", null);
+			return "INDEV-1.2.1";
+		}
+		else return null;
 	}
 	
 }

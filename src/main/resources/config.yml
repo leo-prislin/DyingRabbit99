@@ -1,13 +1,14 @@
-version: "INDEV-1.2.0" # PLEASE DON'T EDIT THIS LINE! OTHERWISE, ERRORS AND DATA LOSS MAY OCCUR!
+version: "INDEV-1.2.1" # PLEASE DON'T EDIT THIS LINE! OTHERWISE, ERRORS AND DATA LOSS MAY OCCUR!
 
 messageColors:
   default: "white"
+  special: "gold"
   success: "green"
   error: "red"
   info: "blue"
-  clickable: "gold"
   overworld: "dark_green"
   nether: "dark_red"
+  the_end: "dark_blue"
 
 onPlayerJoinMessage: "Hi du Lauch!"
 printDeathCordsPublic: true

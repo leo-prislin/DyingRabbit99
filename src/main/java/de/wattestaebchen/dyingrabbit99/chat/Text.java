@@ -29,14 +29,11 @@ public class Text {
 		this("", Type.DEFAULT, decorations);
 	}
 	public Text(String content, Type type, TextDecoration... decorations) {
+		this(content, type, null, decorations);
+	}
+	public Text(String content, Type type, ClickEvent clickEvent, TextDecoration... decorations) {
 		this.content = content;
 		this.type = type;
-		this.decorations = decorations;
-		this.clickEvent = null;
-	}
-	public Text(String content, ClickEvent clickEvent, TextDecoration... decorations) {
-		this.content = content;
-		this.type = Type.CLICKABLE;
 		this.decorations = decorations;
 		this.clickEvent = clickEvent;
 	}
@@ -71,6 +68,7 @@ public class Text {
 		return append(new Text(defaultText, Type.DEFAULT));
 	}
 	
+	
 	Component build() {
 		var builder = Component.text()
 				.content(content)
@@ -86,20 +84,20 @@ public class Text {
 	
 	public enum Type {
 		
-		DEFAULT,
+		DEFAULT, SPECIAL,
 		SUCCESS, ERROR, INFO,
-		CLICKABLE,
-		OVERWORLD, NETHER;
+		OVERWORLD, NETHER, THE_END;
 		
 		public NamedTextColor getColor() {
 			return switch (this) {
 				case DEFAULT -> DyingRabbit99.getColor(Config.getDefaultMessageColor());
+				case SPECIAL -> DyingRabbit99.getColor(Config.getSpecialMessageColor());
 				case SUCCESS -> DyingRabbit99.getColor(Config.getSuccessMessageColor());
 				case ERROR -> DyingRabbit99.getColor(Config.getErrorMessageColor());
 				case INFO -> DyingRabbit99.getColor(Config.getInfoMessageColor());
-				case CLICKABLE -> DyingRabbit99.getColor(Config.getClickableMessageColor());
 				case OVERWORLD -> DyingRabbit99.getColor(Config.getOverworldMessageColor());
 				case NETHER -> DyingRabbit99.getColor(Config.getNetherMessageColor());
+				case THE_END -> DyingRabbit99.getColor(Config.getTheEndMessageColor());
 			};
 		}
 		

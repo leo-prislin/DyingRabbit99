@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 
 public class ConfigCmd extends Cmd {
 	
-	@SubCommandExecutor(label = "save", cmdParams = {"sender"})
+	@CommandExecutor(label = "save")
 	public boolean save(CommandSender sender) {
 		Config.save();
 		Chat.send(
@@ -17,7 +17,7 @@ public class ConfigCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "reload", cmdParams = {"sender"})
+	@CommandExecutor(label = "reload")
 	public boolean reload(CommandSender sender) {
 		Config.reload();
 		Chat.send(sender, new Text(
@@ -27,7 +27,7 @@ public class ConfigCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "reset", cmdParams = {"sender"})
+	@CommandExecutor(label = "reset")
 	public boolean reset(CommandSender sender) {
 		if(Config.reset()) {
 			Chat.send(sender, new Text(
@@ -45,7 +45,7 @@ public class ConfigCmd extends Cmd {
 	
 	
 	
-	@SubCommandExecutor(label = "get printDeathCordsPublic", cmdParams = {"sender"})
+	@CommandExecutor(label = "get printDeathCordsPublic")
 	public boolean getPrintDeathCordsPublic(CommandSender sender) {
 		Chat.send(sender, new Text(
 				Config.getPrintDeathCordsPublic() ?
@@ -55,7 +55,7 @@ public class ConfigCmd extends Cmd {
 		));
 		return true;
 	}
-	@SubCommandExecutor(label = "set printDeathCordsPublic", cmdParams = {"sender"})
+	@CommandExecutor(label = "set printDeathCordsPublic")
 	public boolean setPrintDeathCordsPublic(CommandSender sender, Boolean value) {
 		Config.setPrintDeathCordsPublic(value);
 		Chat.send(sender, new Text(

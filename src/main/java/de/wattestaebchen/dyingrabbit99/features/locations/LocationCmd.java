@@ -14,7 +14,7 @@ import java.util.Collection;
 
 public class LocationCmd extends Cmd {	
 	
-	@SubCommandExecutor(label = "set", cmdParams = {"sender"})
+	@CommandExecutor(label = "set")
 	public boolean set(CommandSender sender, String name) {
 		if(sender instanceof Player p) {
 			boolean overwritten = LocationsConfig.isSet(name);
@@ -31,7 +31,7 @@ public class LocationCmd extends Cmd {
 		}
 		return true;
 	}
-	@SubCommandExecutor(label = "set", cmdParams = {"sender"})
+	@CommandExecutor(label = "set")
 	public boolean set(CommandSender sender, String name, Integer x, Integer y, Integer z) {
 		if(sender instanceof Player p) {
 			boolean overwritten = LocationsConfig.isSet(name);
@@ -50,7 +50,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "set", cmdParams = {"sender"})
+	@CommandExecutor(label = "set")
 	public boolean set(CommandSender sender, String name, String worldName, Integer x, Integer y, Integer z) {
 		boolean overwritten = LocationsConfig.isSet(name);
 		World world = DyingRabbit99.get().getServer().getWorld(worldName);
@@ -70,7 +70,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "remove", cmdParams = {"sender"})
+	@CommandExecutor(label = "remove")
 	public boolean remove(CommandSender sender, String name) {
 		if(LocationsConfig.get().isSet(name)) {
 			LocationsConfig.removeLocation(name);
@@ -82,7 +82,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "get", cmdParams = {"sender"})
+	@CommandExecutor(label = "get")
 	public boolean get(CommandSender sender, String name) {
 		Location location = LocationsConfig.getLocation(name);
 		if(location == null) {
@@ -125,7 +125,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "list", cmdParams = {"sender"})
+	@CommandExecutor(label = "list")
 	public boolean list(CommandSender sender) {
 		Collection<String> keys = LocationsConfig.listLocations();
 		keys = keys.stream()
@@ -151,7 +151,7 @@ public class LocationCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "list", cmdParams = {"sender"})
+	@CommandExecutor(label = "rename")
 	public boolean rename(CommandSender sender, String name, String newName) {
 		if(LocationsConfig.renameLocation(name, newName)) {
 			Chat.send(sender, new Text("Eintrag erfolgreich umbenannt!", Text.Type.SUCCESS));

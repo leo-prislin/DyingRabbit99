@@ -30,10 +30,7 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 			if(commandExecutor == null) continue M;
 			
 			String label = commandExecutor.label();
-			System.out.println("Label : \"" + label + "\"");
-			Arrays.stream(args).forEach(System.out::println);
 			String[] labelSplits = label.isEmpty() ? new String[0] : label.split(" ");
-			System.out.println(labelSplits.length + "  " + args.length);
 			if(labelSplits.length > args.length) continue M;
 			for(int i = 0; i < labelSplits.length; i++) {
 				if(!labelSplits[i].equals(args[i])) {

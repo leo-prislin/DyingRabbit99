@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class FindCmd extends Cmd {
 	
-	@CommandExecutor(cmdParams = {"sender"})
+	@CommandExecutor()
 	public boolean execute(CommandSender sender, String playerName) {
 		Player p = Bukkit.getPlayer(playerName);
 		if(p == null) {

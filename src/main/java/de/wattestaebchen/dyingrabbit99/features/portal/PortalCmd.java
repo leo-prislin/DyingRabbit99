@@ -28,7 +28,7 @@ public class PortalCmd extends Cmd {
 		return getImaginaryPortals().stream().filter((portal) -> portal.getName().equals(name)).findFirst().orElse(null);
 	}
 	
-	@CommandExecutor(cmdParams = {"sender"})
+	@CommandExecutor()
 	public boolean execute(CommandSender sender) {
 		
 		Chat.send(
@@ -58,82 +58,70 @@ public class PortalCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "scan", cmdParams = {"sender"})
-	public boolean scan(CommandSender sender) {
-		return scan(sender, 5, 5, 5);
+	@CommandExecutor(label = "scan", playerOnly = true)
+	public boolean scan(Player p) {
+		return scan(p, 5, 5, 5);
 	}
 	
-	@SubCommandExecutor(label = "scan", cmdParams = {"sender"})
-	public boolean scan(CommandSender sender, Integer xBounds, Integer yBounds, Integer zBounds) {
-		if(sender instanceof Player p) {
-			
-			if(xBounds*yBounds*zBounds > 1000) {
-				Chat.send(sender, new Text("Bitte beschränke dich auf einen kleineren Suchbereich.", Text.Type.ERROR));
-				return true;
+	@CommandExecutor(label = "scan", playerOnly = true)
+	public boolean scan(Player p, Integer xBounds, Integer yBounds, Integer zBounds) {
+		if(xBounds*yBounds*zBounds > 1000) {
+			Chat.send(p, new Text("Bitte beschränke dich auf einen kleineren Suchbereich.", Text.Type.ERROR));
+			return true;
+		}
+		
+		Location playerLoc = p.getLocation();
+		
+		// Remove portals that don´t exist anymore
+		int removedPortals = 0;
+		for(int i = 0; i < getPortals().size(); i++) {
+			Portal portal = getPortals().get(i);
+			if(portal instanceof RealPortal realPortal && !realPortal.exists()) {
+				getPortals().remove(portal);
+				i--;
+				removedPortals++;
 			}
-			
-			Location playerLoc = p.getLocation();
-			
-			// Remove portals that don´t exist anymore
-			int removedPortals = 0;
-			for(int i = 0; i < getPortals().size(); i++) {
-				Portal portal = getPortals().get(i);
-				if(portal instanceof RealPortal realPortal && !realPortal.exists()) {
-					getPortals().remove(portal);
-					i--;
-					removedPortals++;
-				}
-			}
-			// Scan every single block in radius for portals
-			int addedPortals = 0;
-			for(int x = playerLoc.getBlockX()-xBounds; x <= playerLoc.getBlockX()+xBounds; x++) {
-				for(int y = playerLoc.getBlockY()-yBounds; y <= playerLoc.getBlockY()+yBounds; y++) {
-					for(int z = playerLoc.getBlockZ()-zBounds; z <= playerLoc.getBlockZ()+zBounds; z++) {
-						Block block = playerLoc.getWorld().getBlockAt(x, y, z);
-						// Add found nether portal
-						if(block.getType() == Material.NETHER_PORTAL) {
-							RealPortal portal = new RealPortal(block);
-							if(!getPortals().contains(portal)) {
-								getPortals().add(portal);
-								addedPortals++;
-							}
+		}
+		// Scan every single block in radius for portals
+		int addedPortals = 0;
+		for(int x = playerLoc.getBlockX()-xBounds; x <= playerLoc.getBlockX()+xBounds; x++) {
+			for(int y = playerLoc.getBlockY()-yBounds; y <= playerLoc.getBlockY()+yBounds; y++) {
+				for(int z = playerLoc.getBlockZ()-zBounds; z <= playerLoc.getBlockZ()+zBounds; z++) {
+					Block block = playerLoc.getWorld().getBlockAt(x, y, z);
+					// Add found nether portal
+					if(block.getType() == Material.NETHER_PORTAL) {
+						RealPortal portal = new RealPortal(block);
+						if(!getPortals().contains(portal)) {
+							getPortals().add(portal);
+							addedPortals++;
 						}
 					}
 				}
 			}
-			
-			Chat.send(sender, new Text(
-					"Es wurden " + removedPortals + " Portale, die nicht mehr existieren, entfernt und " +
-							addedPortals + " neue Portale registriert.",
-					Text.Type.SUCCESS
-			));
-			
 		}
-		else {
-			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
-		}
+		
+		Chat.send(p, new Text(
+				"Es wurden " + removedPortals + " Portale, die nicht mehr existieren, entfernt und " +
+						addedPortals + " neue Portale registriert.",
+				Text.Type.SUCCESS
+		));
+		
 		return true;
 	}
 	
 	
-	@SubCommandExecutor(label = "sim add", cmdParams = {"sender"})
-	public boolean simAdd(CommandSender sender, String name){
-		if(sender instanceof Player p) {
-			
-			if(getImaginaryPortals().stream().anyMatch((portal) -> portal.getName().equals(name))) {
-				Chat.send(sender, new Text("Es existiert bereits ein Portal mit diesem Namen.", Text.Type.ERROR));
-				return true;
-			}
-			getPortals().add(new ImaginaryPortal(name, new Location(p.getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ())));
-			Chat.send(sender, new Text("Portal erfolgreich hinzugefügt.", Text.Type.SUCCESS));
+	@CommandExecutor(label = "sim add", playerOnly = true)
+	public boolean simAdd(Player p, String name){		
+		if(getImaginaryPortals().stream().anyMatch((portal) -> portal.getName().equals(name))) {
+			Chat.send(p, new Text("Es existiert bereits ein Portal mit diesem Namen.", Text.Type.ERROR));
+			return true;
 		}
-		else {
-			Chat.send(sender, new Text("Dieser Command ist nur für Spieler verfügbar.", Text.Type.ERROR));
-		}
+		getPortals().add(new ImaginaryPortal(name, new Location(p.getWorld(), p.getLocation().getBlockX(), p.getLocation().getBlockY(), p.getLocation().getBlockZ())));
+		Chat.send(p, new Text("Portal erfolgreich hinzugefügt.", Text.Type.SUCCESS));
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim remove", cmdParams = {"sender"})
+	@CommandExecutor(label = "sim remove")
 	public boolean simRemove(CommandSender sender, String name) {
 		ImaginaryPortal portal = getImaginaryPortalByName(name);
 		if(portal == null) {
@@ -145,7 +133,7 @@ public class PortalCmd extends Cmd {
 		return true;
 	}
 	
-	@SubCommandExecutor(label = "sim rename", cmdParams = {"sender"})
+	@CommandExecutor(label = "sim rename")
 	public boolean simRename(CommandSender sender, String oldName, String newName) {
 		ImaginaryPortal portal = getImaginaryPortalByName(oldName);
 		if(portal == null) {

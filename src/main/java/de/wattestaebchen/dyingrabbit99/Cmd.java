@@ -1,9 +1,12 @@
 package de.wattestaebchen.dyingrabbit99;
 
+import de.wattestaebchen.dyingrabbit99.chat.Chat;
+import de.wattestaebchen.dyingrabbit99.chat.Text;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,111 +22,81 @@ import java.util.List;
 
 public abstract class Cmd implements CommandExecutor, TabCompleter {
 	
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command ignored0, @NotNull String ignored1, @NotNull String[] args) {
 		
-		// Execute Command (no SubCommands)
-		for(Method method : getClass().getMethods()) {
-			if(!method.isAnnotationPresent(CommandExecutor.class)) continue;
+		M: for(Method method : getClass().getMethods()) {
 			
-			// Check if entered args match the required parameters
-			Object[] castArgs = castArgs(method, args, sender, command, label, args);
-			if(castArgs == null) continue;
+			CommandExecutor commandExecutor = method.getAnnotation(CommandExecutor.class);
+			if(commandExecutor == null) continue M;
+			
+			String label = commandExecutor.label();
+			System.out.println("Label : \"" + label + "\"");
+			Arrays.stream(args).forEach(System.out::println);
+			String[] labelSplits = label.isEmpty() ? new String[0] : label.split(" ");
+			System.out.println(labelSplits.length + "  " + args.length);
+			if(labelSplits.length > args.length) continue M;
+			for(int i = 0; i < labelSplits.length; i++) {
+				if(!labelSplits[i].equals(args[i])) {
+					continue M;
+				}
+			}
+			
+			String[] params = new String[args.length - labelSplits.length];
+			System.arraycopy(args, labelSplits.length, params, 0, params.length);
+			
+			Object[] castParams = castParams(method, sender, params);
+			if(castParams == null) continue M;
+			
+			if(commandExecutor.playerOnly()) {
+				if(sender instanceof Player p) {
+					castParams[0] = p;
+				} else {
+					Chat.send(sender, new Text("Dieser Befehl ist nur für Spieler verfügbar.", Text.Type.ERROR));
+					return true;
+				}
+			}
 			
 			try {
-				return (boolean) method.invoke(this, castArgs);
+				return (boolean) method.invoke(this, castParams);
 			} catch(IllegalAccessException | InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}
-		}
-		
-		if(args.length == 0) return false;
-		
-		// Execute SubCommands
-		for(Method method : getClass().getMethods()) {
-			SubCommandExecutor subCommandExecutor = method.getAnnotation(SubCommandExecutor.class);
-			if(subCommandExecutor == null) continue;
 			
-			// Check if entered args match the subCommand label
-			String argString = String.join(" ", args);
-			if(!argString.startsWith(subCommandExecutor.label())) continue;
-			
-			// Remove the label from args to get an array of method parameters
-			int labelLength = subCommandExecutor.label().split(" ").length;
-			String[] relevantArgs = new String[args.length - labelLength];
-			System.arraycopy(args, labelLength, relevantArgs, 0, relevantArgs.length);
-			
-			// Check if entered args match the required parameters
-			Object[] castArgs = castArgs(method, relevantArgs, sender, command, label, args);
-			if(castArgs == null) continue;
-			
-			try {
-				return (boolean) method.invoke(this, castArgs);
-			} catch(IllegalAccessException | InvocationTargetException e) {
-				throw new RuntimeException(e);
-			}
 		}
 		
 		return false;
 		
 	}
 	
-	
-	
 	/**
-	 * Supported Types: String, int, boolean
-	 * @return Object array of cast relevantArgs or null if relevantArgs could not be cast
+	 * Supported Types: String, Integer, Boolean
+	 * @return Object array of cast parameters or null if parameters could not be cast
 	 */
-	private Object[] castArgs(Method method, String[] relevantArgs, CommandSender sender, Command command, String label, String[] args) {
-		
-		CommandExecutor commandExecutor = method.getAnnotation(CommandExecutor.class);
-		SubCommandExecutor subCommandExecutor = method.getAnnotation(SubCommandExecutor.class);
-		
-		String[] cmdParams = (commandExecutor != null) ?
-			commandExecutor.cmdParams() :
-			subCommandExecutor.cmdParams();
-		Object[] castArgs = new Object[cmdParams.length + relevantArgs.length];
-		
-		// Check args length
-		if(method.getParameterCount() != castArgs.length) return null;
-		
-		// Add cmdParams
-		for(int i = 0; i < cmdParams.length; i++) {
-			castArgs[i] = switch(cmdParams[i]) {
-				case "sender" -> sender;
-				case "command" -> command;
-				case "label" -> label;
-				case "relevantArgs" -> args;
-				default -> null;
-			};
-		}
-		
-		// Add relevantArgs
+	private Object[] castParams(Method method, CommandSender sender, String[] params) {
 		Class<?>[] types = method.getParameterTypes();
-		for(int i = cmdParams.length; i < castArgs.length; i++) {
-			// Type String
-			if(types[i].equals(String.class)) {
-				castArgs[i] = relevantArgs[i-cmdParams.length];
-			}
-			// Type Integer
-			if(types[i].equals(Integer.class)) {
-				try { castArgs[i] = Integer.parseInt(relevantArgs[i- cmdParams.length]); }
-				catch(NumberFormatException ignored) { return null; }
-			}
-			// Type Boolean
-			if(types[i].equals(Boolean.class)) {
-				boolean returnNull = false;
-				castArgs[i] = switch(relevantArgs[i-cmdParams.length]) {
-					case "yes", "y", "ja", "j", "true", "t" -> true;
-					case "no", "n", "nein", "false", "f" -> false;
-					default -> {
-						returnNull = true;
-						yield false;
-					}
-				};
-				if(returnNull) return null;
+		if(types.length != params.length+1 || types[0] != CommandSender.class) return null;
+		
+		List<Object> list = new ArrayList<>();
+		list.add(sender);
+		
+		for(int i = 0; i < params.length; i++) {
+			if(types[i+1] == String.class) {
+				list.add(params[i]);
+			} else if(types[i+1] == Integer.class) {
+				try { list.add(Integer.parseInt(params[i])); }
+				catch(NumberFormatException e) { return null; }
+			} else if(types[i+1] == Boolean.class) {
+				switch(params[i]) {
+					case "yes", "y", "ja", "j", "true", "t" -> list.add(true);
+					case "no", "n", "nein", "false", "f" -> list.add(false);
+					default -> { return null; }
+				}
+			} else {
+				throw new RuntimeException("Commands can only accept String, Integer or Boolean parameters. There´s an error in the Command-Class!");
 			}
 		}
-		return castArgs;
+		
+		return list.toArray();
 	}
 	
 	@Override
@@ -132,9 +105,9 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 		if(args.length == 0) return List.of();
 		
 		ArrayList<String> completions = new ArrayList<>();
-		for(Method method : Arrays.stream(getClass().getMethods()).filter(m -> m.isAnnotationPresent(SubCommandExecutor.class)).toList()) {
+		for(Method method : Arrays.stream(getClass().getMethods()).filter(m -> m.isAnnotationPresent(CommandExecutor.class)).toList()) {
 			
-			String[] parameters = method.getAnnotation(SubCommandExecutor.class).label().split(" ");
+			String[] parameters = method.getAnnotation(CommandExecutor.class).label().split(" ");
 			if(parameters.length < args.length) continue;
 			
 			String[] relevantParameters = new String[args.length];
@@ -146,34 +119,15 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 			
 		}
 		return completions;
-		
 	}
 	
 	
 	/** Method must return a boolean! */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
-	public @interface CommandExecutor {
-		/**
-		 * cmdParams() Defines the additional parameters from onCommand that should be passed to this method.
-		 * For every entry in cmdParams(), there must be a corresponding method-parameter.
-		 * These parameters have to be the first method-parameters and need to be in the same order as in cmdParams().
-		 * Possible values are: sender, command, label, args.
-		 */
-		String[] cmdParams() default {};
-	}
-	/** Method must return a boolean! */
-	@Retention(RetentionPolicy.RUNTIME)
-	@Target(ElementType.METHOD)
-	public @interface SubCommandExecutor {
-		String label();
-		/**
-		 * cmdParams() defines the additional parameters from onCommand that should be passed to this method.
-		 * For every entry in cmdParams(), there must be a corresponding method-parameter.
-		 * These parameters have to be the first method-parameters and need to be in the same order as in cmdParams().
-		 * Possible values are: sender, command, label, args.
-		 */
-		String[] cmdParams() default {};
+	protected @interface CommandExecutor {
+		String label() default "";
+		boolean playerOnly() default false;
 	}
 	
 }

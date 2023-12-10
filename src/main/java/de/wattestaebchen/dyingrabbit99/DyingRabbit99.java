@@ -21,7 +21,7 @@ import java.util.Objects;
 
 public class DyingRabbit99 extends JavaPlugin {
 	
-	public static final String VERSION = "INDEV-1.2.1";
+	public static final String VERSION = "INDEV-1.2.2";
 	
 	private static DyingRabbit99 instance;
 	public static DyingRabbit99 get() { return instance; }

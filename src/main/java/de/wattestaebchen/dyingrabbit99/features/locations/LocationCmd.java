@@ -24,7 +24,7 @@ public class LocationCmd extends Cmd {
 		}
 		else {
 			Chat.send(sender, new Text(
-					"Diese Version dieses Befehls ist nur für Spieler verfügbar." +
+					"Diese Version dieses Befehls ist nur für Spieler verfügbar. " +
 							"Bitte übergib zusätzlich die Koordinaten als Argumente.",
 					Text.Type.ERROR)
 			);
@@ -42,7 +42,7 @@ public class LocationCmd extends Cmd {
 		}
 		else {
 			Chat.send(sender, new Text(
-					"Diese Version dieses Befehls ist nur für Spieler verfügbar." +
+					"Diese Version dieses Befehls ist nur für Spieler verfügbar. " +
 							"Bitte übergib zusätzlich den Namen der Welt als Argument.",
 					Text.Type.ERROR)
 			);

@@ -69,7 +69,7 @@ public class Text {
 	}
 	
 	
-	Component build() {
+	public Component build() {
 		var builder = Component.text()
 				.content(content)
 				.color(type.getColor())
@@ -90,14 +90,14 @@ public class Text {
 		
 		public NamedTextColor getColor() {
 			return switch (this) {
-				case DEFAULT -> DyingRabbit99.getColor(Config.getDefaultMessageColor());
-				case SPECIAL -> DyingRabbit99.getColor(Config.getSpecialMessageColor());
-				case SUCCESS -> DyingRabbit99.getColor(Config.getSuccessMessageColor());
-				case ERROR -> DyingRabbit99.getColor(Config.getErrorMessageColor());
-				case INFO -> DyingRabbit99.getColor(Config.getInfoMessageColor());
-				case OVERWORLD -> DyingRabbit99.getColor(Config.getOverworldMessageColor());
-				case NETHER -> DyingRabbit99.getColor(Config.getNetherMessageColor());
-				case THE_END -> DyingRabbit99.getColor(Config.getTheEndMessageColor());
+				case DEFAULT -> DyingRabbit99.getColor("white");
+				case SPECIAL -> DyingRabbit99.getColor("gold");
+				case SUCCESS -> DyingRabbit99.getColor("green");
+				case ERROR -> DyingRabbit99.getColor("red");
+				case INFO -> DyingRabbit99.getColor("blue");
+				case OVERWORLD -> DyingRabbit99.getColor("dark_green");
+				case NETHER -> DyingRabbit99.getColor("dark_red");
+				case THE_END -> DyingRabbit99.getColor("dark_blue");
 			};
 		}
 		

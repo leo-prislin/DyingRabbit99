@@ -8,6 +8,9 @@ contributors: []
 prefix: DR99
 
 permissions:
+  dr99.menu:
+    description: Berechtigt zur Nutzung von /menu
+    default: op
   dr99.config:
     description: Berechtigt zur Nutzung von /config
     default: op
@@ -40,3 +43,8 @@ commands:
   portal:
     usage: /portal [(scan [xBounds yBounds zBounds])/(sim (add <name>)/(rename <oldName> <newName>)/(remove <name>))]
     description: Scanne Netherportale in deiner Welt oder simuliere sie, um dir dann die jeweiligen Portalverbindungen ausgeben zu lassen. Damit kannst du problemlos einen Nether-Hub bauen.
+  
+  menu:
+    usage: /menu
+    description: Öffnet ein graphisches Menü, um viele DR99 Funktionen zu bedienen.
+    permission: dr99.menu

@@ -71,7 +71,7 @@ public abstract class Cmd implements CommandExecutor, TabCompleter {
 	 */
 	private Object[] castParams(Method method, CommandSender sender, String[] params) {
 		Class<?>[] types = method.getParameterTypes();
-		if(types.length != params.length+1 || types[0] != CommandSender.class) return null;
+		if(types.length != params.length+1 || types[0] != (method.getAnnotation(CommandExecutor.class).playerOnly() ? Player.class : CommandSender.class)) return null;
 		
 		List<Object> list = new ArrayList<>();
 		list.add(sender);

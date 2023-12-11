@@ -3,6 +3,8 @@ package de.wattestaebchen.dyingrabbit99.features.config;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
+import de.wattestaebchen.dyingrabbit99.features.menu.Menu;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
@@ -93,7 +95,20 @@ public class Config {
 			get().set("messageColors.clickable", null);
 			return "INDEV-1.2.1";
 		}
+		else if(version.equals("INDEV-1.2.1")) {
+			get().set("messageColors", null);
+			return "INDEV-1.2.2";
+		}
 		else return null;
+	}
+	
+	
+	public static Menu getMenu() {
+		return new Menu(3, "DyingRabbit99 - Config", true)
+				.setChildMenu(9+4, Material.TOTEM_OF_UNDYING, "Todesort", new Menu(3, "DR99 - Config - Todesort", true)
+						.setEntry(9+3, Material.GREEN_WOOL, "öffentlich", event -> setPrintDeathCordsPublic(true))
+						.setEntry(9+5, Material.RED_WOOL, "privat", event -> setPrintDeathCordsPublic(false))
+				);
 	}
 	
 }

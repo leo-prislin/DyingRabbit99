@@ -5,9 +5,12 @@ import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.features.config.CustomConfig;
 import de.wattestaebchen.dyingrabbit99.features.config.OutdatedConfigException;
+import de.wattestaebchen.dyingrabbit99.features.menu.Menu;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 
 import java.util.*;
 
@@ -30,6 +33,19 @@ public final class LocationsConfig extends CustomConfig {
 		instance.saveConfig();
 	}
 	
+	public static Menu getMenu() {
+		List<String> keys = listLocations();
+		
+		return new Menu(3, "Locations", true)
+				.setChildMenu(9+4, Material.WRITTEN_BOOK, "Liste", new Menu((keys.size()-1)/9+1, "DR99 - Locations - Liste", true)
+						.setEntries(0, keys, key -> switch(LocationsConfig.getLocation(key).getWorld().getEnvironment()) {
+							case NORMAL -> Material.GRASS_BLOCK;
+							case NETHER -> Material.NETHERRACK;
+							case THE_END -> Material.END_STONE;
+							case CUSTOM -> Material.SHROOMLIGHT;
+						}, key -> key, (key, event) -> ((Player) event.getWhoClicked()).performCommand("location get " + key))
+				);
+	}
 	
 	public static void setLocation(String name, Location location) {
 		get().set("locations." + name, location);
@@ -54,14 +70,22 @@ public final class LocationsConfig extends CustomConfig {
 		}
 		else return false;
 	}
-	public static Set<String> listLocations() {
+	public static List<String> listLocations() {
+		Collection<String> keys;
 		try {
-			return Objects.requireNonNull(get().getConfigurationSection("locations")).getKeys(false);
+			keys = Objects.requireNonNull(get().getConfigurationSection("locations")).getKeys(false);
 		}
 		catch(NullPointerException e) {
 			Chat.sendToConsole(new Text("Die locations-Config ist fehlerhaft. Bitte überprüfen!", Text.Type.ERROR));
-			return new HashSet<>();
+			return List.of();
 		}
+		return keys.stream()
+				.sorted((key0, key1) -> {
+					int world = getLocation(key0).getWorld().getName().compareToIgnoreCase(getLocation(key1).getWorld().getName());
+					return world == 0 ?
+							key0.compareToIgnoreCase(key1) :
+							world;
+				}).toList();
 	}
 	
 	

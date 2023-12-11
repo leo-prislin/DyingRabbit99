@@ -2,6 +2,7 @@ package de.wattestaebchen.dyingrabbit99.features.portal;
 
 import de.wattestaebchen.dyingrabbit99.features.config.CustomConfig;
 import de.wattestaebchen.dyingrabbit99.features.config.OutdatedConfigException;
+import de.wattestaebchen.dyingrabbit99.features.menu.Menu;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
@@ -28,6 +29,7 @@ public final class PortalsConfig extends CustomConfig {
 		instance.saveConfig();
 	}
 	
+	
 	static ArrayList<Portal> getPortals() {
 		return PortalsConfig.portals;
 	}
@@ -51,4 +53,5 @@ public final class PortalsConfig extends CustomConfig {
 		}
 		else return null;
 	}
+	
 }

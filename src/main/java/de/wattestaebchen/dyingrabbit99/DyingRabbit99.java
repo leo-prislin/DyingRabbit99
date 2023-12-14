@@ -132,5 +132,4 @@ public class DyingRabbit99 extends JavaPlugin {
 		return head;
 	}
 	
-	
 }

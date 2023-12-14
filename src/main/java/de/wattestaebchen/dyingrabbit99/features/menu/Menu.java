@@ -4,7 +4,6 @@ import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
 import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import de.wattestaebchen.dyingrabbit99.features.find.FindCmd;
 import de.wattestaebchen.dyingrabbit99.features.locations.LocationsConfig;
-import de.wattestaebchen.dyingrabbit99.features.portal.PortalsConfig;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;

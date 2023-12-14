@@ -1,7 +1,6 @@
 package de.wattestaebchen.dyingrabbit99.chat;
 
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import de.wattestaebchen.dyingrabbit99.features.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.TextComponent;

@@ -7,7 +7,6 @@ import de.wattestaebchen.dyingrabbit99.chat.Text;
 import de.wattestaebchen.dyingrabbit99.features.menu.Menu;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

@@ -2,17 +2,13 @@ package de.wattestaebchen.dyingrabbit99.features.locations;
 
 import de.wattestaebchen.dyingrabbit99.Cmd;
 import de.wattestaebchen.dyingrabbit99.DyingRabbit99;
-import de.wattestaebchen.dyingrabbit99.features.menu.Menu;
 import de.wattestaebchen.dyingrabbit99.chat.Chat;
 import de.wattestaebchen.dyingrabbit99.chat.Text;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class LocationCmd extends Cmd {	
 	
@@ -129,12 +125,11 @@ public class LocationCmd extends Cmd {
 	
 	@CommandExecutor(label = "list")
 	public boolean list(CommandSender sender) {
-		List<String> keys = LocationsConfig.listLocations();
 		Chat.send(
 				sender,
 				new Text("Liste aller gespeicherten Orte:", Text.Type.DEFAULT)
 						.appendCollection(
-								keys,
+								LocationsConfig.listLocations(),
 								(key) -> new Text().nl()
 									.append(new Text(
 											key,
@@ -154,12 +149,6 @@ public class LocationCmd extends Cmd {
 		else {
 			Chat.send(sender, new Text("Es existiert kein Eintrag mit diesem Namen.", Text.Type.ERROR));
 		}
-		return true;
-	}
-	
-	@CommandExecutor(label = "menu", playerOnly = true)
-	public boolean menu(Player p) {
-		LocationsConfig.getMenu().open(p);
 		return true;
 	}
 	

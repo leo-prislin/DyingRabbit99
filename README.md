@@ -1,7 +1,7 @@
 # DyingRabbit99
 A Minecraft Paper Plugin
 
-DyingRabbit99 version INDEV-1.2.0 and above is made for Minecraft Java 1.20.2
+DyingRabbit99 version INDEV-1.2.2 and above is made for Minecraft Java 1.20.4
 
 ## What is DyingRabbit99
 DyingRabbit is a hobby project of mine. It´s a Minecraft Paper Plugin I´m developing for a private survival server. I use GitHub primarily for organizational reasons, but everyone is welcome to use it, suggest new features or contribute.
@@ -17,6 +17,7 @@ Please note, that any text you find in this plugin is German (my first language)
    - OnPlayerJoinMessage: Configure a welcome message that is always sent to a player when he joins.
    - PrintDeathCords: Printing your death coordinates to the chat when you die, to help you to get your stuff back in time.
  - Portal: Simulate nether portals and calculate your portals destination.
+ - Menu: Open a menu to handle many of this plugin's features using a graphical UI.
  - More features coming soon...
 
 ### Planned features

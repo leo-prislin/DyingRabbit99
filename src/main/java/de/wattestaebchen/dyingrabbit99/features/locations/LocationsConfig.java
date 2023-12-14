@@ -124,6 +124,9 @@ public final class LocationsConfig extends CustomConfig {
 			}
 			return "INDEV-1.2.1";
 		}
+		else if(version.equals("INDEV-1.2.1")) {
+			return "INDEV-1.2.2";
+		}
 		else return null;
 	}
 }
